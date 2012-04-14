@@ -12,7 +12,7 @@ public class ExpressaoUnaria extends Expressao {
 
 	@Override
 	public Object valor(Escopo escopo) {
-		Number operando = (Number) this.operando.valor(null);
+		Number operando = (Number) this.operando.valor(escopo);
 		if (operador.equals("-"))
 			return -operando.doubleValue();
 		throw new UnsupportedOperationException();

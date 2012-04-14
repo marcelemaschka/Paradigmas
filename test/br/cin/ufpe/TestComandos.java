@@ -26,8 +26,15 @@ public class TestComandos {
 
 	@Test
 	public void atribuicao() throws RecognitionException {
-		executar("x = 5 + 3 * 10;");
+		executar("{ x = 5 + 3 * 10; }");
 		assertEquals(35.0, escopo.get("x"));
 	}
+	
+	@Test
+	public void se() throws RecognitionException {
+		executar("{ x=10; se (x<=10) { y=1000; } }");
+		assertEquals(1000L, escopo.get("y"));
+	}
+
 
 }

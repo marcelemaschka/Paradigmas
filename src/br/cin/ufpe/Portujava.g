@@ -28,13 +28,18 @@ bloco returns [Bloco rv]
   ArrayList<Comando> comandos = new ArrayList<Comando>();
 }
   :
+  '{'
   (comando { comandos.add($comando.rv); })*
+  '}'
   { rv = new Bloco(comandos); }
   ;
   
 comando returns [Comando rv]
   :
-  (cmd=atribuicao)
+  ( 
+    cmd=atribuicao
+  | cmd=se
+  )
   { $rv = $cmd.rv; }
   ;
   
@@ -42,6 +47,12 @@ atribuicao returns [Comando rv]
   :
   (identificador '=' expressao ';')
   { $rv = new Atribuicao($identificador.rv, $expressao.rv); }
+  ;
+  
+se returns [Comando rv]
+  :
+  ('se' exp=expressao_entre_parentesis bloco )
+  { $rv = new Se($exp.rv, $bloco.rv); }
   ;
   
 // Para facilitar a leitura, definimos as expressoes em ordem inversa de precedencia
