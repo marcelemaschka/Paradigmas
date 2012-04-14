@@ -34,7 +34,7 @@ public class TestExpressoes {
 		assertEquals(true, calcular("verdadeiro"));
 		assertEquals(false, calcular("falso"));
 	}
-	
+
 	@Test
 	public void valorNot() throws RecognitionException {
 		assertEquals(false, calcular("!verdadeiro"));
@@ -78,12 +78,10 @@ public class TestExpressoes {
 		assertEquals(false, calcular(" 10<=9"));
 		assertEquals(true, calcular(" 25==25.0"));
 		assertEquals(true, calcular("1!=0"));
-		assertEquals(true,calcular("'texto teste'=='texto teste'"));
-		assertEquals(false,calcular("'texto teste 1'=='texto teste'"));
-		assertEquals(false,calcular("'1'== 1"));
-		assertEquals(true, calcular("(((1+1)==3)==falso)"));
+		assertEquals(true, calcular("'texto teste'=='texto teste'"));
+		assertEquals(false, calcular("'texto teste 1'=='texto teste'"));
+		assertEquals(false, calcular("'1'== 1"));
 		assertEquals(true, calcular("1+1==3==falso"));
-		
 	}
 
 	@Test
