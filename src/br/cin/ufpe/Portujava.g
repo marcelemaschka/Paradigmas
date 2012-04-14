@@ -44,9 +44,16 @@ comando returns [Comando rv]
   | cmd=declaracao_de_funcao
   | cmd=atribuicao
   | cmd=se
-  | cmd=enquanto   
+  | cmd=enquanto
+  | cmd=comando_expressao
   )
   { $rv = $cmd.rv; }
+  ;
+  
+comando_expressao returns [Comando rv]
+  :
+  expressao ';'
+  { $rv = $expressao.rv; }
   ;
   
 retornar returns [Comando rv]
