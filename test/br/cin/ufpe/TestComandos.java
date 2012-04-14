@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import br.cin.ufpe.ast.Bloco;
 import br.cin.ufpe.ast.Escopo;
+import br.cin.ufpe.ast.Programa;
 
 public class TestComandos {
 
@@ -20,27 +21,26 @@ public class TestComandos {
 		PortujavaLexer lexer = new PortujavaLexer(cod);
 		PortujavaParser parser = new PortujavaParser(new CommonTokenStream(
 				lexer));
-		Bloco bloco = parser.bloco();
-		bloco.executar(escopo);
+		Programa prog = parser.programa();
+		prog.executar(escopo);
 	}
 
 	@Test
 	public void atribuicao() throws RecognitionException {
-		executar("{ x = 5 + 3 * 10; }");
+		executar("x = 5 + 3 * 10;");
 		assertEquals(35.0, escopo.get("x"));
 	}
-	
+
 	@Test
 	public void se() throws RecognitionException {
-		executar("{ x=10; se (x<=10) { y=1000; } }");
+		executar("x=10; se (x<=10) { y=1000; }");
 		assertEquals(1000L, escopo.get("y"));
 	}
-	
+
 	@Test
 	public void enquanto() throws RecognitionException {
-		executar("{ x=0; enquanto (x<100) { x=x+1; } }");
+		executar("x=0; enquanto (x<100) { x=x+1; }");
 		assertEquals(100.0, escopo.get("x"));
 	}
-
 
 }
