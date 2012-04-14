@@ -141,20 +141,39 @@ disjuncao returns [Expressao rv]
   
 conjuncao returns [Expressao rv]
   :
-  (esq=comparacao { $rv = $esq.rv; })
-  (op='&&' dir=comparacao { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); })*
+  (
+  esq=comparacao
+  { $rv = $esq.rv; }
+  )
+  (
+  op='&&' dir=comparacao
+  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); }
+  )*
   ;
   
 comparacao returns [Expressao rv]
   :
-  (esq=soma { $rv = $esq.rv; })
-  (op=('>='|'>'|'<='|'<'|'=='|'!=') dir=soma { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); })?
+  (
+  esq=soma 
+  { $rv = $esq.rv; }
+  )
+  ( 
+  op=('>='|'>'|'<='|'<'|'=='|'!=')
+  dir=soma 
+  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); }
+  )*
   ;
   
 soma returns [Expressao rv]
   :
-  (esq=multiplicacao { $rv = $esq.rv; }) 
-  (op=('+'|'-') dir=multiplicacao { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text) ;})*
+  (
+  esq=multiplicacao
+  { $rv = $esq.rv; }
+  ) 
+  (
+  op=('+'|'-') dir=multiplicacao
+  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text) ;}
+  )*
   ;  
 
 multiplicacao returns [Expressao rv]
