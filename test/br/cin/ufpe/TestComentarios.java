@@ -10,10 +10,10 @@ import org.junit.Test;
 import br.cin.ufpe.ast.Escopo;
 import br.cin.ufpe.ast.Programa;
 
-public class TestComandos {
-
+public class TestComentarios {
+	
 	private Escopo escopo;
-
+	
 	public void executar(String codigo) throws RecognitionException {
 		escopo = new Escopo();
 		ANTLRStringStream cod = new ANTLRStringStream(codigo);
@@ -23,23 +23,17 @@ public class TestComandos {
 		Programa prog = parser.programa();
 		prog.executar(escopo);
 	}
-
+	
 	@Test
-	public void atribuicao() throws RecognitionException {
-		executar("x = 5 + 3 * 10;");
+	public void comentarioDeLinha() throws RecognitionException {
+		executar("//qqq\nx = 5 + 3 * 10;//aaaa\n");
 		assertEquals(35.0, escopo.get("x"));
 	}
-
+	
 	@Test
-	public void se() throws RecognitionException {
-		executar("x=10; se (x<=10) { y=1000; }");
-		assertEquals(1000L, escopo.get("y"));
-	}
-
-	@Test
-	public void enquanto() throws RecognitionException {
-		executar("x=0; enquanto (x<100) { x=x+1; }");
-		assertEquals(100.0, escopo.get("x"));
+	public void comentarioDeBloco() throws RecognitionException {
+		executar("/*aaa*\naaa */x = 5 + 3 * 10;/*sadfamfk*/");
+		assertEquals(35.0, escopo.get("x"));
 	}
 
 }

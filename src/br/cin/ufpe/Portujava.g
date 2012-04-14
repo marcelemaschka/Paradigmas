@@ -233,3 +233,15 @@ ESPACO_EM_BRANCO
   (' ')+
   { $channel = HIDDEN; }
   ;
+  
+COMENTARIO_LINHA
+  :
+  ('//' ~('\n'|'\r')* '\r'? '\n')
+  { $channel = HIDDEN; }
+  ;
+  
+COMENTARIO_BLOCO
+  :
+  ('/*' .* '*/')
+  { $channel = HIDDEN; }
+  ;
