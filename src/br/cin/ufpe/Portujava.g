@@ -69,7 +69,8 @@ enquanto returns [Comando rv]
 expressao returns [Expressao rv]
   :
   (   
-    exp=expressao_binaria  
+    exp=expressao_binaria
+      
   )
   { $rv = $exp.rv; }
   ;
@@ -82,39 +83,70 @@ expressao_binaria returns [Expressao rv]
   
 disjuncao returns [Expressao rv]
   :
-  (esq=conjuncao { $rv = $esq.rv; })
-  (op='||' dir=conjuncao { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); })*
+  (
+  esq=conjuncao
+  { $rv = $esq.rv; }
+  )
+  (
+  op='||' dir=conjuncao
+  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); }
+  )*
   ;
   
 conjuncao returns [Expressao rv]
   :
-  (esq=comparacao { $rv = $esq.rv; })
-  (op='&&' dir=comparacao { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); })*
+  (
+  esq=comparacao
+  { $rv = $esq.rv; }
+  )
+  (
+  op='&&' dir=comparacao
+  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); }
+  )*
   ;
   
 comparacao returns [Expressao rv]
   :
-  (esq=soma { $rv = $esq.rv; })
-  (op=('>='|'>'|'<='|'<'|'=='|'!=') dir=soma { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); })?
+  (
+  esq=soma 
+  { $rv = $esq.rv; }
+  )
+  ( 
+  op=('>='|'>'|'<='|'<'|'=='|'!=')
+  dir=soma 
+  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); }
+  )*
   ;
   
 soma returns [Expressao rv]
   :
-  (esq=multiplicacao { $rv = $esq.rv; }) 
-  (op=('+'|'-') dir=multiplicacao { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text) ;})*
+  (
+  esq=multiplicacao
+  { $rv = $esq.rv; }
+  ) 
+  (
+  op=('+'|'-') dir=multiplicacao
+  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text) ;}
+  )*
   ;  
 
 multiplicacao returns [Expressao rv]
   :
-  (esq=atomo { $rv = $esq.rv; }) 
-  (op=('*'|'/') dir=atomo { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text) ;})* 
+  (
+  esq=atomo
+  { $rv = $esq.rv; }
+  ) 
+  (
+  op=('*'|'/') dir=atomo
+  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text) ;}
+  )* 
   ;  
   
 atomo returns [Expressao rv] 
 // Nessa regra temos que atribuir o valor de retorno dentro de cada caso
 // pois a regra 'identificador' retorna um objeto do tipo 'Identificador'
 // e as outras regras retornam objetos do tipo 'Expressao'. Normalmente isso
-// nao seria problema pois um 'Identificador' é tambem uma 'Expressao' mas
+// nao seria problema pois um 'Identificador' ï¿½ tambem uma 'Expressao' mas
 // o antlr nao aceita isso   
   :  
   (

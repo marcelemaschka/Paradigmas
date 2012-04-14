@@ -32,6 +32,8 @@ public class ExpressaoBinaria extends Expressao {
 			return esq && dir;
 		else if (operador.equals("||"))
 			return esq || dir;
+		else if (operador.equals("=="))
+			return esq == dir;
 		throw new UnsupportedOperationException();
 	}
 

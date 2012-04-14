@@ -72,7 +72,13 @@ public class TestExpressoes {
 		assertEquals(true,calcular("'texto teste'=='texto teste'"));
 		assertEquals(false,calcular("'texto teste 1'=='texto teste'"));
 		assertEquals(false,calcular("'1'== 1"));
+		assertEquals(true, calcular("falso==falso"));
+		assertEquals(true, calcular("verdadeiro==verdadeiro"));
+		assertEquals(true, calcular("((1+1)==3)==falso"));
+		assertEquals(true, calcular("(1+1==3)==falso"));
+		assertEquals(false, calcular("1-1==0==falso"));
 		assertEquals(true, calcular("1+1==3==falso"));
+		assertEquals(true, calcular("falso==verdadeiro==(1-2==3))"));
 		
 	}
 
