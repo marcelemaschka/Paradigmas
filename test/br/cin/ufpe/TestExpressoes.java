@@ -122,6 +122,8 @@ public class TestExpressoes {
 		assertEquals(true, calcular("(((1+1)==3)==falso)"));
 		assertEquals(true, calcular("1+1==3==falso"));
 		assertEquals(true, calcular("falso==verdadeiro==(1-2==3))"));
+		assertEquals(true, calcular("falso==falso==verdadeiro==falso==falso"));
+		assertEquals(false, calcular("1<2==(3>4)==falso==(12<=3*4)==falso"));
 		
 	}
 
