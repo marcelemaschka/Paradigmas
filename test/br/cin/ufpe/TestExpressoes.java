@@ -11,14 +11,15 @@ import br.cin.ufpe.ast.Escopo;
 import br.cin.ufpe.ast.Expressao;
 
 public class TestExpressoes {
-	
+
 	private Escopo escopo;
 
 	public Object calcular(String codigo) throws RecognitionException {
 		escopo = new Escopo();
 		ANTLRStringStream cod = new ANTLRStringStream(codigo);
 		PortujavaLexer lexer = new PortujavaLexer(cod);
-		PortujavaParser parser = new PortujavaParser(new CommonTokenStream(lexer));
+		PortujavaParser parser = new PortujavaParser(new CommonTokenStream(
+				lexer));
 		Expressao exp = parser.expressao();
 		return exp.valor(escopo);
 	}
@@ -45,6 +46,16 @@ public class TestExpressoes {
 	}
 
 	@Test
+	public void somaStringOutrosTiposEsquerda() throws RecognitionException {
+		assertEquals("Teste 1", calcular("'Teste ' + 1"));
+	}
+
+	@Test
+	public void somaStringOutrosTiposDireita() throws RecognitionException {
+		assertEquals("verdadeiroTeste", calcular("verdadeiro + 'Teste'"));
+	}
+
+	@Test
 	public void comparacoes() throws RecognitionException {
 		assertEquals(true, calcular(" 5>=4"));
 		assertEquals(false, calcular(" 3>4"));
@@ -52,6 +63,11 @@ public class TestExpressoes {
 		assertEquals(false, calcular(" 10<=9"));
 		assertEquals(true, calcular(" 25==25.0"));
 		assertEquals(true, calcular("1!=0"));
+		assertEquals(true,calcular("'texto teste'=='texto teste'"));
+		assertEquals(false,calcular("'texto teste 1'=='texto teste'"));
+		assertEquals(false,calcular("'1'== 1"));
+		assertEquals(true, calcular("1+1==3==falso"));
+		
 	}
 
 	@Test

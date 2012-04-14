@@ -16,4 +16,13 @@ public class Identificador extends Expressao {
 	public Object valor(Escopo escopo) {
 		return escopo.get(nome);
 	}
+
+	@Override
+	public String valorTexto(Escopo escopo) {
+		Object valor=valor(escopo);
+		if(valor instanceof Boolean){
+			return (Boolean) valor?"verdadeiro":"falso";
+		}
+		return valor.toString();
+	}
 }

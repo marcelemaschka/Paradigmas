@@ -17,10 +17,11 @@ public class ExpressaoBinaria extends Expressao {
 	public Object valor(Escopo escopo) {
 		Object esq = esquerda.valor(escopo);
 		Object dir = direita.valor(escopo);
-		if (esq instanceof Number)
+		if ((esq instanceof String) || (dir instanceof String))
+			return valorTexto(esquerda, direita, escopo);
+		else if (esq instanceof Number)
 			return valorNumerico((Number) esq, dir);
-		else if (esq instanceof String)
-			return valorTexto((String) esq, dir);
+
 		else if (esq instanceof Boolean && dir instanceof Boolean)
 			return valorBooleano((Boolean) esq, (Boolean) dir);
 		throw new IllegalArgumentException();
@@ -34,15 +35,31 @@ public class ExpressaoBinaria extends Expressao {
 		throw new UnsupportedOperationException();
 	}
 
-	private Object valorTexto(String esq, Object direita) {
-		// FIXME Tratar o caso em que a expressao esquerda é um número
-		// e a direita é uma String
+	private Object valorTexto(Expressao esquerda, Expressao direita,
+			Escopo escopo) {
+
 		if (operador.equals("+"))
-			return esq + direita.toString();
+			return esquerda.valorTexto(escopo) + direita.valorTexto(escopo);
 		// TODO Implementar operador de igualdade '==' para Strings
-		// Opcionalmente colocar suporte para '*' (multiplicação de String
-		// por número)
+		// Opcionalmente colocar suporte para '*' (multiplicaï¿½ï¿½o de String
+		// por nï¿½mero)
+		else if (operador.equals("==")) {
+			return textoIgual(esquerda, direita, escopo);
+		}else if(operador.equals("!=")){
+			return !textoIgual(esquerda, direita, escopo);
+		}
 		throw new UnsupportedOperationException();
+	}
+
+	private boolean textoIgual(Expressao esquerda, Expressao direita,
+			Escopo escopo) {
+		if (esquerda.valor(escopo) instanceof String
+				&& direita.valor(escopo) instanceof String) {
+			return esquerda == null ? direita == null : esquerda
+					.valorTexto(escopo).equals(direita.valorTexto(escopo));
+		}else{
+			return false;
+		}
 	}
 
 	private Object valorNumerico(Number esq, Object direita) {
@@ -70,5 +87,14 @@ public class ExpressaoBinaria extends Expressao {
 		else if (operador.equals("!="))
 			return esq.doubleValue() != dir.doubleValue();
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String valorTexto(Escopo escopo) {
+		Object valor = valor(escopo);
+		if (valor instanceof Boolean) {
+			return (Boolean) valor ? "verdadeiro" : "falso";
+		}
+		return valor.toString();
 	}
 }

@@ -12,4 +12,9 @@ public class Texto extends Expressao {
 	public Object valor(Escopo escopo) {
 		return valor;
 	}
+
+	@Override
+	public String valorTexto(Escopo escopo) {
+		return valor;
+	}
 }
