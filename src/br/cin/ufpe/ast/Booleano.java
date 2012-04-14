@@ -16,7 +16,5 @@ public class Booleano extends Expressao {
 	@Override
 	public Object valor(Escopo escopo) {
 		return valor;
-	}
-
-	
+	}	
 }
