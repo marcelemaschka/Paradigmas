@@ -35,6 +35,12 @@ public class TestComandos {
 		executar("{ x=10; se (x<=10) { y=1000; } }");
 		assertEquals(1000L, escopo.get("y"));
 	}
+	
+	@Test
+	public void enquanto() throws RecognitionException {
+		executar("{ x=0; enquanto (x<100) { x=x+1; } }");
+		assertEquals(100.0, escopo.get("x"));
+	}
 
 
 }

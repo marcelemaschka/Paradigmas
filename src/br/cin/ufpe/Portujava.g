@@ -39,6 +39,7 @@ comando returns [Comando rv]
   ( 
     cmd=atribuicao
   | cmd=se
+  | cmd=enquanto
   )
   { $rv = $cmd.rv; }
   ;
@@ -54,6 +55,12 @@ se returns [Comando rv]
   ('se' exp=expressao_entre_parentesis bloco )
   { $rv = new Se($exp.rv, $bloco.rv); }
   ;
+  
+enquanto returns [Comando rv]
+  :
+  ('enquanto' exp=expressao_entre_parentesis bloco )
+  { $rv = new Enquanto($exp.rv, $bloco.rv); }
+  ;  
   
 // Para facilitar a leitura, definimos as expressoes em ordem inversa de precedencia
 expressao returns [Expressao rv]
