@@ -203,7 +203,7 @@ expressao_entre_parentesis returns [Expressao rv]
 expressao_unaria returns [Expressao rv]
   :
   (
-    op=('+'|'-') exp=atomo
+    op=('+'|'-'|'!') exp=atomo
     { $rv = new ExpressaoUnaria($op.text, $exp.rv); }
   )
   ;
@@ -299,5 +299,17 @@ IDENTIFICADOR
 ESPACO_EM_BRANCO
   :
   (' '|'\n'|'\t')+
+  { $channel = HIDDEN; }
+  ;
+  
+COMENTARIO_LINHA
+  :
+  ('//' ~('\n'|'\r')* '\r'? '\n')
+  { $channel = HIDDEN; }
+  ;
+  
+COMENTARIO_BLOCO
+  :
+  ('/*' .* '*/')
   { $channel = HIDDEN; }
   ;

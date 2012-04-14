@@ -29,4 +29,10 @@ public class ChamadaDeFuncao extends Expressao {
 			args.add(exp.valor(escopo));
 		return closure.chamar(args);
 	}
+
+	@Override
+	public String valorTexto(Escopo escopo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

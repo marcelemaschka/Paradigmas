@@ -12,4 +12,9 @@ public class Decimal extends Expressao {
 	public Object valor(Escopo escopo) {
 		return valor;
 	}
+
+	@Override
+	public String valorTexto(Escopo escopo) {
+		return Double.toString(valor);
+	}
 }

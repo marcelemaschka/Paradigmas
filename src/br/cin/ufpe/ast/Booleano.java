@@ -15,6 +15,22 @@ public class Booleano extends Expressao {
 
 	@Override
 	public Object valor(Escopo escopo) {
-		return valor;
-	}	
+		return this.valor;
+	}
+
+	@Override
+	public String toString() {
+		return this.valor?"verdadeiro":"falso";
+	}
+
+	@Override
+	public String valorTexto(Escopo escopo) {
+		return toString();
+	}
+
+	
+	
+	
+
+	
 }

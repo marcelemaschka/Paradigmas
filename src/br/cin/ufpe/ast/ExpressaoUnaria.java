@@ -12,10 +12,24 @@ public class ExpressaoUnaria extends Expressao {
 
 	@Override
 	public Object valor(Escopo escopo) {
-		Number operando = (Number) this.operando.valor(escopo);
-		if (operador.equals("-"))
+		if (operador.equals("-")) {
+			Number operando = (Number) this.operando.valor(escopo);
 			return -operando.doubleValue();
+		} else if (operador.equals("!")){
+			Boolean operando = (Boolean) this.operando.valor(escopo);
+			return !operando;
+		}
+			
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String valorTexto(Escopo escopo) {
+		Object valor=valor(escopo);
+		if(valor instanceof Boolean){
+			return (Boolean) valor?"verdadeiro":"falso";
+		}
+		return valor.toString();
 	}
 
 }

@@ -49,4 +49,10 @@ public class Funcao extends Expressao {
 			return valorRetorno;
 		}
 	}
+
+	@Override
+	public String valorTexto(Escopo escopo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
