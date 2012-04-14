@@ -63,6 +63,15 @@ public class TestExpressoes {
 
 	@Test
 	public void comparacoes() throws RecognitionException {
+		assertEquals(true, calcular("verdadeiro==verdadeiro"));
+		assertEquals(true, calcular("falso==falso"));
+		assertEquals(true, calcular("verdadeiro!=falso"));
+		assertEquals(true, calcular("falso!=verdadeiro"));
+		assertEquals(false, calcular("verdadeiro!=verdadeiro"));
+		assertEquals(false, calcular("falso!=falso"));
+		assertEquals(false, calcular("verdadeiro==falso"));
+		assertEquals(false, calcular("falso==verdadeiro"));
+		assertEquals(true, calcular(" 5>=4"));
 		assertEquals(true, calcular(" 5>=4"));
 		assertEquals(false, calcular(" 3>4"));
 		assertEquals(true, calcular(" 5.4 < 6"));
@@ -72,6 +81,7 @@ public class TestExpressoes {
 		assertEquals(true,calcular("'texto teste'=='texto teste'"));
 		assertEquals(false,calcular("'texto teste 1'=='texto teste'"));
 		assertEquals(false,calcular("'1'== 1"));
+		assertEquals(true, calcular("(((1+1)==3)==falso)"));
 		assertEquals(true, calcular("1+1==3==falso"));
 		
 	}
