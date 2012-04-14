@@ -23,8 +23,9 @@ public class ExpressaoBinaria extends Expressao {
 			return esq.doubleValue() - dir.doubleValue();
 		else if (operador.equals("*"))
 			return esq.doubleValue() * dir.doubleValue();
-		else
+		else if (operador.equals("/"))
 			return esq.doubleValue() / dir.doubleValue();
+		throw new UnsupportedOperationException();
 	}
 
 }
