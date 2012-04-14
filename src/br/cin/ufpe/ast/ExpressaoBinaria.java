@@ -24,6 +24,7 @@ public class ExpressaoBinaria extends Expressao {
 
 		else if (esq instanceof Boolean && dir instanceof Boolean)
 			return valorBooleano((Boolean) esq, (Boolean) dir);
+		
 		throw new IllegalArgumentException();
 	}
 
@@ -32,6 +33,10 @@ public class ExpressaoBinaria extends Expressao {
 			return esq && dir;
 		else if (operador.equals("||"))
 			return esq || dir;
+		else if (operador.equals("=="))
+			return esq == dir;
+		else if (operador.equals("!="))
+			return esq != dir;
 		throw new UnsupportedOperationException();
 	}
 
