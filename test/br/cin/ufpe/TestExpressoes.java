@@ -1,6 +1,6 @@
 package br.cin.ufpe;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -33,6 +33,12 @@ public class TestExpressoes {
 	public void valoresBooleanos() throws RecognitionException {
 		assertEquals(true, calcular("verdadeiro"));
 		assertEquals(false, calcular("falso"));
+	}
+	
+	@Test
+	public void valorNot() throws RecognitionException {
+		assertEquals(false, calcular("!verdadeiro"));
+		assertEquals(true, calcular("!falso"));
 	}
 
 	@Test

@@ -17,10 +17,13 @@ options {
 }
 
 
-programa returns [Bloco rv]
+programa returns [Programa rv]
+@init {
+  ArrayList<Comando> comandos = new ArrayList<Comando>();
+}
   :
-  exp=bloco
-  { $rv = $exp.rv; }
+  (comando { comandos.add($comando.rv); })*  
+  { rv = new Programa(comandos); }
   ;
   
 bloco returns [Bloco rv]
@@ -132,7 +135,7 @@ expressao_entre_parentesis returns [Expressao rv]
 expressao_unaria returns [Expressao rv]
   :
   (
-    op=('+'|'-') exp=atomo
+    op=('+'|'-'|'!') exp=atomo
     { $rv = new ExpressaoUnaria($op.text, $exp.rv); }
   )
   ;
