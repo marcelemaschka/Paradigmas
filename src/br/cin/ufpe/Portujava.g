@@ -17,10 +17,13 @@ options {
 }
 
 
-programa returns [Bloco rv]
+programa returns [Programa rv]
+@init {
+  ArrayList<Comando> comandos = new ArrayList<Comando>();
+}
   :
-  exp=bloco
-  { $rv = $exp.rv; }
+  (comando { comandos.add($comando.rv); })*  
+  { rv = new Programa(comandos); }
   ;
   
 bloco returns [Bloco rv]
