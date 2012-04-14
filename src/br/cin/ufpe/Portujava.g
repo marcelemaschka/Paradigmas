@@ -81,8 +81,8 @@ atribuicao returns [Comando rv]
   
 se returns [Comando rv]
   :
-  ('se' exp=expressao_entre_parentesis bloco )
-  { $rv = new Se($exp.rv, $bloco.rv); }
+  ('se' (exp=expressao_entre_parentesis bloco1=bloco) ('senao' bloco2=bloco)? )
+  { $rv = new Se($exp.rv, $bloco1.rv, $bloco2.rv); }
   ;
   
 enquanto returns [Comando rv]

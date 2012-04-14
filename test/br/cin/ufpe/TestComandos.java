@@ -36,6 +36,14 @@ public class TestComandos {
 		executar("x=10; se (x<=10) { y=1000; }");
 		assertEquals(1000L, escopo.get("y"));
 	}
+	
+	@Test
+	public void senao() throws RecognitionException, Retorno {
+		executar("x=1;y=2; se (falso) { y=3; } senao { x = 4; }");
+		assertEquals(2L, escopo.get("y"));
+		assertEquals(4L, escopo.get("x"));
+		
+	}
 
 	@Test
 	public void enquanto() throws RecognitionException, Retorno {
