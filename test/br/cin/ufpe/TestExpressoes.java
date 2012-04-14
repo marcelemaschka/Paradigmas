@@ -1,6 +1,6 @@
 package br.cin.ufpe;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -34,7 +34,7 @@ public class TestExpressoes {
 		assertEquals(true, calcular("verdadeiro"));
 		assertEquals(false, calcular("falso"));
 	}
-	
+
 	@Test
 	public void valorNot() throws RecognitionException {
 		assertEquals(false, calcular("!verdadeiro"));
@@ -63,6 +63,15 @@ public class TestExpressoes {
 
 	@Test
 	public void comparacoes() throws RecognitionException {
+		assertEquals(true, calcular("verdadeiro==verdadeiro"));
+		assertEquals(true, calcular("falso==falso"));
+		assertEquals(true, calcular("verdadeiro!=falso"));
+		assertEquals(true, calcular("falso!=verdadeiro"));
+		assertEquals(false, calcular("verdadeiro!=verdadeiro"));
+		assertEquals(false, calcular("falso!=falso"));
+		assertEquals(false, calcular("verdadeiro==falso"));
+		assertEquals(false, calcular("falso==verdadeiro"));
+		assertEquals(true, calcular(" 5>=4"));
 		assertEquals(true, calcular(" 5>=4"));
 		assertEquals(false, calcular(" 3>4"));
 		assertEquals(true, calcular(" 5.4 < 6"));

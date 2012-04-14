@@ -39,12 +39,45 @@ bloco returns [Bloco rv]
   
 comando returns [Comando rv]
   :
-  ( 
-    cmd=atribuicao
+  (
+    cmd=retornar
+  | cmd=declaracao_de_funcao
+  | cmd=atribuicao
   | cmd=se
   | cmd=enquanto
+  | cmd=comando_expressao
   )
   { $rv = $cmd.rv; }
+  ;
+  
+comando_expressao returns [Comando rv]
+  :
+  expressao ';'
+  { $rv = $expressao.rv; }
+  ;
+  
+retornar returns [Comando rv]
+  :
+  'retornar' (exp=expressao)? ';'
+  { $rv = new Retornar($exp.rv); }
+  ;
+  
+declaracao_de_funcao returns [Comando rv]
+@init {
+  ArrayList<String> parametros = new ArrayList<String>();
+}
+  :
+  (
+    'funcao' nome=identificador
+    '(' 
+    (
+      p1=identificador { parametros.add($p1.rv.getNome()); }
+      (',' pn=identificador { parametros.add($pn.rv.getNome()); })*
+    )? 
+    ')'
+    bloco
+  )
+  { $rv = new DeclaracaoDeFuncao($nome.rv, parametros, $bloco.rv); }
   ;
   
 atribuicao returns [Comando rv]
@@ -55,8 +88,8 @@ atribuicao returns [Comando rv]
   
 se returns [Comando rv]
   :
-  ('se' exp=expressao_entre_parentesis bloco )
-  { $rv = new Se($exp.rv, $bloco.rv); }
+  ('se' (exp=expressao_entre_parentesis bloco1=bloco) ('senao' bloco2=bloco)? )
+  { $rv = new Se($exp.rv, $bloco1.rv, $bloco2.rv); }
   ;
   
 enquanto returns [Comando rv]
@@ -69,11 +102,30 @@ enquanto returns [Comando rv]
 expressao returns [Expressao rv]
   :
   (   
-    exp=expressao_binaria
-      
+    exp=funcao    
+  | exp=expressao_binaria  
   )
   { $rv = $exp.rv; }
   ;
+  
+funcao returns [Expressao rv] 
+@init {
+  ArrayList<String> parametros = new ArrayList<String>();
+}
+  :
+  (
+    'funcao'
+    '(' 
+    (
+      p1=identificador { parametros.add($p1.rv.getNome()); }
+      (',' pn=identificador { parametros.add($pn.rv.getNome()); })*
+    )? 
+    ')'
+    bloco
+  )
+  { $rv = new Funcao(parametros, $bloco.rv); }
+  ;
+         
   
 expressao_binaria returns [Expressao rv]
   :
@@ -83,14 +135,8 @@ expressao_binaria returns [Expressao rv]
   
 disjuncao returns [Expressao rv]
   :
-  (
-  esq=conjuncao
-  { $rv = $esq.rv; }
-  )
-  (
-  op='||' dir=conjuncao
-  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); }
-  )*
+  (esq=conjuncao { $rv = $esq.rv; })
+  (op='||' dir=conjuncao { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); })*
   ;
   
 conjuncao returns [Expressao rv]
@@ -132,32 +178,48 @@ soma returns [Expressao rv]
 
 multiplicacao returns [Expressao rv]
   :
+  (esq=expressao_primaria { $rv = $esq.rv; }) 
+  (op=('*'|'/') dir=expressao_primaria { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text) ;})* 
+  ;
+  
+expressao_primaria returns [Expressao rv]
+// regra que serve para identificar as expressoes de maior precedencia na linguagem
+// por enquanto somente átomos e chamadas de funcao estão nesta categoria, futuramente
+// pode ser usada para outras operaçoes, tipo accessar o atributos de uma instancia
+  :
+  atomo { $rv = $atomo.rv; }
   (
-  esq=atomo
-  { $rv = $esq.rv; }
-  ) 
+    ('(' l=lista_de_expressoes ')' { $rv = new ChamadaDeFuncao($rv, $l.rv); }) 
+  )*
+  ;
+  
+lista_de_expressoes returns [List<Expressao> rv]
+@init {
+  ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
+}
+  :
   (
-  op=('*'|'/') dir=atomo
-  { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text) ;}
-  )* 
-  ;  
+    exp1=expressao { expressoes.add($exp1.rv); }
+    (',' expn=expressao { expressoes.add($expn.rv); })*
+  )?
+  { $rv = expressoes; }
+  ;
   
 atomo returns [Expressao rv] 
 // Nessa regra temos que atribuir o valor de retorno dentro de cada caso
 // pois a regra 'identificador' retorna um objeto do tipo 'Identificador'
 // e as outras regras retornam objetos do tipo 'Expressao'. Normalmente isso
-// nao seria problema pois um 'Identificador' ï¿½ tambem uma 'Expressao' mas
+// nao seria problema pois um 'Identificador' é tambem uma 'Expressao' mas
 // o antlr nao aceita isso   
   :  
-  (
+  (    
     (expressao_entre_parentesis  { $rv = $expressao_entre_parentesis.rv; })
   | (expressao_unaria  { $rv = $expressao_unaria.rv; })
   | (valor  { $rv = $valor.rv; })
-  | (identificador  { $rv = $identificador.rv; })
-  )
- 
-  ; 
-       
+  | (identificador  { $rv = $identificador.rv; })  
+  ) 
+  ;
+
 expressao_entre_parentesis returns [Expressao rv]
   :
   '(' exp=expressao_binaria ')'
@@ -257,12 +319,12 @@ FALSO
 IDENTIFICADOR
   :
   ('a'..'z'|'A'..'Z')
-  ('a'..'z'|'A'..'Z'|'0..9')*
+  ('a'..'z'|'A'..'Z'|'0'..'9')*
   ;
   
 ESPACO_EM_BRANCO
   :
-  (' ')+
+  (' '|'\n'|'\t')+
   { $channel = HIDDEN; }
   ;
   

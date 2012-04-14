@@ -1,6 +1,7 @@
 package br.cin.ufpe;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -11,7 +12,7 @@ import br.cin.ufpe.ast.Escopo;
 import br.cin.ufpe.ast.Programa;
 import br.cin.ufpe.ast.Retornar.Retorno;
 
-public class TestComandos {
+public class TestFuncoes {
 
 	private Escopo escopo;
 
@@ -26,29 +27,26 @@ public class TestComandos {
 	}
 
 	@Test
-	public void atribuicao() throws RecognitionException, Retorno {
-		executar("x = 5 + 3 * 10;");
-		assertEquals(35.0, escopo.get("x"));
+	public void retorno() throws RecognitionException {
+		try {
+			executar("retornar 5;");
+			fail("Nao retornou nada");
+		} catch (Retorno e) {
+			assertEquals(5L, e.getValor());
+		}
 	}
 
 	@Test
-	public void se() throws RecognitionException, Retorno {
-		executar("x=10; se (x<=10) { y=1000; }");
-		assertEquals(1000L, escopo.get("y"));
+	public void declaracaoEChamada() throws RecognitionException, Retorno {
+		executar("funcao f(x) { retornar x + 5; } y = f(10);");
+		assertEquals(15.0, escopo.get("y"));		
 	}
 	
-	@Test
-	public void senao() throws RecognitionException, Retorno {
-		executar("x=1;y=2; se (falso) { y=3; } senao { x = 4; }");
-		assertEquals(2L, escopo.get("y"));
-		assertEquals(4L, escopo.get("x"));
-		
-	}
 
 	@Test
-	public void enquanto() throws RecognitionException, Retorno {
-		executar("x=0; enquanto (x<100) { x=x+1; }");
-		assertEquals(100.0, escopo.get("x"));
+	public void funcaoRecursiva() throws RecognitionException, Retorno {
+		executar("funcao fatorial(n) { se(n == 1) { retornar 1; } retornar n * fatorial(n-1); } y = fatorial(5);");
+		assertEquals(120.0, escopo.get("y"));		
 	}
 
 }
