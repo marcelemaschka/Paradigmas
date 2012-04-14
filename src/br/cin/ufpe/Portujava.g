@@ -15,12 +15,14 @@ options {
   package br.cin.ufpe;
 }
 
+
 programa returns [Expressao rv]
   :
   exp=expressao
   { $rv = $exp.rv; }
   ;
   
+// Para facilitar a leitura, definimos as expressoes em ordem inversa de precedencia
 expressao returns [Expressao rv]
   :
   (   
@@ -31,9 +33,27 @@ expressao returns [Expressao rv]
   
 expressao_binaria returns [Expressao rv]
   :
-  exp=soma
+  exp=disjuncao
   { $rv = $exp.rv; }
-  ;  
+  ;
+  
+disjuncao returns [Expressao rv]
+  :
+  (esq=conjuncao { $rv = $esq.rv; })
+  (op='||' dir=conjuncao { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); })*
+  ;
+  
+conjuncao returns [Expressao rv]
+  :
+  (esq=comparacao { $rv = $esq.rv; })
+  (op='&&' dir=comparacao { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); })*
+  ;
+  
+comparacao returns [Expressao rv]
+  :
+  (esq=soma { $rv = $esq.rv; })
+  (op=('>='|'>'|'<='|'<'|'=='|'!=') dir=soma { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text); })?
+  ;
   
 soma returns [Expressao rv]
   :
@@ -73,7 +93,7 @@ expressao_unaria returns [Expressao rv]
      
 valor returns [Expressao rv]
   :
-  (exp=decimal|exp=inteiro) 
+  (exp=decimal|exp=inteiro|exp=texto|exp=booleano) 
   { $rv = $exp.rv; } 
   ;
   
@@ -88,6 +108,18 @@ inteiro returns [Expressao rv]
   t=INTEIRO
   { $rv = new Inteiro($t.text); }
   ;
+  
+texto returns [Expressao rv]
+  :
+  t=TEXTO
+  { $rv = new Texto($t.text); }
+  ;
+  
+booleano returns [Expressao rv]
+  :
+  (t=VERDADEIRO|t=FALSO)
+  { $rv = new Booleano($t.text); }
+  ;
 
 DECIMAL
   :
@@ -97,4 +129,46 @@ DECIMAL
 INTEIRO
   :
   ('0'..'9')+
+  ;
+  
+TEXTO
+@init {
+  StringBuilder sb = new StringBuilder();
+}
+  :
+  (
+    '\''
+    (
+      (
+        c=
+        (
+          '\\'
+          (
+            ('n' { sb.append("\n"); })
+          | ('\'' { sb.append("'"); })
+          | ('\\' { sb.append("\\"); })
+          )
+        )
+      )
+    | (c=~('\''|'\\'|'\n') { sb.appendCodePoint($c); })
+    )*
+    '\''
+  )
+  { setText(sb.toString()); }
+  ;
+  
+VERDADEIRO
+  :
+  'verdadeiro'
+  ;
+  
+FALSO
+  :
+  'falso'
+  ;
+  
+ESPACO_EM_BRANCO
+  :
+  (' ')+
+  { $channel = HIDDEN; }
   ;
