@@ -1,3 +1,21 @@
-funcao f(x) {
-	retornar x + 5;
-}
+Projeto do mestrado
+
+Implementação de uma linguagem que mistura elementos básicos da sintaxe de java com portugol
+
+
+Instruções :
+
+- Instalar o 'Eclipse IDE for Java Developers', pois essa versao contem o eclipse marketplace.
+- Instalar a versao 1.6 do java e garantir que o eclipse está rodando nessa versao(se tiverem a versao 1.7 é melhor
+  desinstalar.
+- Dentro do eclipse clicar em Help->Eclipse Marketplace, pesquisar por 'antlr' e instalar o ANTLRIDE
+- Clonar o repositório do github(git@github.com:marcelemaschka/Paradigmas.git)
+- Adicionar o projeto ao workspace do eclipse(é recomendado usar um workspace limpo)
+- Dentro do diretório lib do projeto, clicar com o botao direito no antlr.jar e seleciona a opção 
+  Build Path-> add to build path
+
+Configuração do eclipse:
+
+- No menu window->preferences->ANTLR->builder adicionar o jar do antlr(dentro do diretorio lib do projeto)
+- No menu window->preferences->ANTLR->code generator selecionar a opção 'project relative folder' e colocar 'antlr'
+  dentro da caixa de texto. Tambem certifique-se de que a opção 'Append java package to output folder' está marcada
