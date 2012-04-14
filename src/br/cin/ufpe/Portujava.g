@@ -132,7 +132,7 @@ expressao_entre_parentesis returns [Expressao rv]
 expressao_unaria returns [Expressao rv]
   :
   (
-    op=('+'|'-') exp=atomo
+    op=('+'|'-'|'!') exp=atomo
     { $rv = new ExpressaoUnaria($op.text, $exp.rv); }
   )
   ;
