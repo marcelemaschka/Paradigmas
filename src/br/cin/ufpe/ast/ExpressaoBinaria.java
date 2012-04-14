@@ -14,9 +14,9 @@ public class ExpressaoBinaria extends Expressao {
 	}
 
 	@Override
-	public Object valor() {
-		Object esq = esquerda.valor();
-		Object dir = direita.valor();
+	public Object valor(Escopo escopo) {
+		Object esq = esquerda.valor(null);
+		Object dir = direita.valor(null);
 		if (esq instanceof Number)
 			return valorNumerico((Number) esq, dir);
 		else if (esq instanceof String)

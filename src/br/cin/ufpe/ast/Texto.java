@@ -9,7 +9,7 @@ public class Texto extends Expressao {
 	}
 
 	@Override
-	public Object valor() {
+	public Object valor(Escopo escopo) {
 		return valor;
 	}
 }

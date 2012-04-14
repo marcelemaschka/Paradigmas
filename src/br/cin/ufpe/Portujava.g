@@ -8,6 +8,7 @@ options {
 @header {
   package br.cin.ufpe;
   
+  import java.util.ArrayList;
   import br.cin.ufpe.ast.*;
 }
 
@@ -16,10 +17,31 @@ options {
 }
 
 
-programa returns [Expressao rv]
+programa returns [Bloco rv]
   :
-  exp=expressao
+  exp=bloco
   { $rv = $exp.rv; }
+  ;
+  
+bloco returns [Bloco rv]
+@init {
+  ArrayList<Comando> comandos = new ArrayList<Comando>();
+}
+  :
+  (comando { comandos.add($comando.rv); })*
+  { rv = new Bloco(comandos); }
+  ;
+  
+comando returns [Comando rv]
+  :
+  (cmd=atribuicao)
+  { $rv = $cmd.rv; }
+  ;
+  
+atribuicao returns [Comando rv]
+  :
+  (identificador '=' expressao ';')
+  { $rv = new Atribuicao($identificador.rv, $expressao.rv); }
   ;
   
 // Para facilitar a leitura, definimos as expressoes em ordem inversa de precedencia
@@ -67,14 +89,20 @@ multiplicacao returns [Expressao rv]
   (op=('*'|'/') dir=atomo { $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text) ;})* 
   ;  
   
-atomo returns [Expressao rv]
-  :
+atomo returns [Expressao rv] 
+// Nessa regra temos que atribuir o valor de retorno dentro de cada caso
+// pois a regra 'identificador' retorna um objeto do tipo 'Identificador'
+// e as outras regras retornam objetos do tipo 'Expressao'. Normalmente isso
+// nao seria problema pois um 'Identificador' é tambem uma 'Expressao' mas
+// o antlr nao aceita isso   
+  :  
   (
-    exp=expressao_entre_parentesis
-  | exp=expressao_unaria 
-  | exp=valor 
+    (expressao_entre_parentesis  { $rv = $expressao_entre_parentesis.rv; })
+  | (expressao_unaria  { $rv = $expressao_unaria.rv; })
+  | (valor  { $rv = $valor.rv; })
+  | (identificador  { $rv = $identificador.rv; })
   )
-  { $rv = $exp.rv; }
+ 
   ; 
        
 expressao_entre_parentesis returns [Expressao rv]
@@ -95,6 +123,12 @@ valor returns [Expressao rv]
   :
   (exp=decimal|exp=inteiro|exp=texto|exp=booleano) 
   { $rv = $exp.rv; } 
+  ;
+  
+identificador returns [Identificador rv]
+  :
+  (t=IDENTIFICADOR)
+  { $rv = new Identificador($t.text); }
   ;
   
 decimal returns [Expressao rv]
@@ -165,6 +199,12 @@ VERDADEIRO
 FALSO
   :
   'falso'
+  ;
+  
+IDENTIFICADOR
+  :
+  ('a'..'z'|'A'..'Z')
+  ('a'..'z'|'A'..'Z'|'0..9')*
   ;
   
 ESPACO_EM_BRANCO
