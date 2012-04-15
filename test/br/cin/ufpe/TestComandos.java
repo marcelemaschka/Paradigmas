@@ -2,6 +2,10 @@ package br.cin.ufpe;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -36,13 +40,13 @@ public class TestComandos {
 		executar("x=10;y=0; se (x<=10) { y=1000; }");
 		assertEquals(1000L, escopo.get("y"));
 	}
-	
+
 	@Test
 	public void senao() throws RecognitionException, Retorno {
 		executar("x=1;y=2; se (falso) { y=3; } senao { x = 4; }");
 		assertEquals(2L, escopo.get("y"));
 		assertEquals(4L, escopo.get("x"));
-		
+
 	}
 
 	@Test
@@ -50,18 +54,31 @@ public class TestComandos {
 		executar("x=0; enquanto (x<100) { x=x+1; }");
 		assertEquals(100.0, escopo.get("x"));
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void escopo() throws RecognitionException, Retorno{
+
+	@Test(expected = IllegalArgumentException.class)
+	public void escopo() throws RecognitionException, Retorno {
 		executar("x=0;se(x==0){y=2;}x=y+2;");
-		assertEquals(false, (Double)(escopo.get("x"))==4);
+		assertEquals(false, (Double) (escopo.get("x")) == 4);
 	}
-	
+
 	@Test
-	public void para() throws RecognitionException, Retorno{
-		
+	public void para() throws RecognitionException, Retorno {
+
 		executar("fatorial=1;para(x=10;x>0;x=x-1){fatorial=fatorial*x;}");
 		assertEquals(3628800.0, escopo.get("fatorial"));
+	}
+
+	@Test
+	public void escreva() throws RecognitionException, Retorno, IOException {
+		PrintStream out = System.out;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		System.setOut(new PrintStream(baos));
+		executar("escreva 'O valor de x é '+10*5;");
+		baos.flush();
+		baos.close();
+		String str = new String(baos.toByteArray());
+		assertEquals(true, "O valor de x é 50.0\n".equals(str));
+		System.setOut(out);
 	}
 
 }

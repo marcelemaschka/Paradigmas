@@ -47,9 +47,8 @@ ArrayList<Comando> comandos = new ArrayList<Comando>();
 comando returns [Comando rv]
   :
   (
-     cmd=comando_pontoVirgula|cmd=comando_fluxo
-     
-     
+    cmd=comando_pontoVirgula
+    | cmd=comando_fluxo
   )
   
   {
@@ -57,10 +56,9 @@ comando returns [Comando rv]
   }
   ;
 
-comando_pontoVirgula returns[Comando rv]
+comando_pontoVirgula returns [Comando rv]
   :
   (cmd=comando_execucao ';') 
-  
                             {
                              $rv = $cmd.rv;
                             }
@@ -72,6 +70,7 @@ comando_execucao returns [Comando rv]
     cmd=retornar
     | cmd=atribuicao
     | cmd=comando_expressao
+    | cmd=comando_escrever
   )
   
   {
@@ -95,10 +94,20 @@ comando_fluxo returns [Comando rv]
 
 comando_expressao returns [Comando rv]
   :
-  expressao 
-           {
-            $rv = $expressao.rv;
-           }
+  (
+  expressao
+  ) 
+             {
+              $rv = $expressao.rv;
+             }
+  ;
+
+comando_escrever returns [Comando rv]
+  :
+  cmd='escreva' exp=expressao 
+                         {
+                          $rv = new Escreva($exp.rv);
+                         }
   ;
 
 retornar returns [Comando rv]
@@ -227,9 +236,9 @@ conjuncao returns [Expressao rv]
 comparacao returns [Expressao rv]
   :
   (esq=bitwise 
-           {
-            $rv = $esq.rv;
-           })
+              {
+               $rv = $esq.rv;
+              })
   (
     op=
     (
@@ -241,15 +250,15 @@ comparacao returns [Expressao rv]
       | '!='
     )
     dir=bitwise 
-            {
-             $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
-            }
+               {
+                $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
+               }
   )*
   ;
-  
+
 bitwise returns [Expressao rv]
-:
-(esq=soma 
+  :
+  (esq=soma 
            {
             $rv = $esq.rv;
            })
@@ -257,9 +266,9 @@ bitwise returns [Expressao rv]
     op=
     (
       '&'
-      |'|'
-      |'>>'
-      |'<<'
+      | '|'
+      | '>>'
+      | '<<'
     )
     dir=soma 
             {
@@ -267,7 +276,6 @@ bitwise returns [Expressao rv]
             }
   )*
   ;
-
 
 soma returns [Expressao rv]
   :
@@ -534,13 +542,17 @@ IDENTIFICADOR
 
 ESPACO_EM_BRANCO
   :
-
-  (' '|'\n'|'\r'|'\t')+
-  { $channel = HIDDEN; }
-  ;
-
+  (
+    ' '
+    | '\n'
+    | '\r'
+    | '\t'
+  )+
   
- 
+  {
+   $channel = HIDDEN;
+  }
+  ;
 
 COMENTARIO_LINHA
   :
