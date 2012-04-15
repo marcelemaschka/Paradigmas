@@ -324,7 +324,7 @@ IDENTIFICADOR
   
 ESPACO_EM_BRANCO
   :
-  (' '|'\n'|'\t')+
+  (' '|'\n'|'\r'|'\t')+
   { $channel = HIDDEN; }
   ;
   

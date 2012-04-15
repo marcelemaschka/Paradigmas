@@ -31,6 +31,8 @@ public class InterpretadorInterativo {
 			} catch (NoSuchElementException e) {
 				System.exit(0);
 			}
+			if (line == null)
+				continue;
 			if (line.equals("sair"))
 				System.exit(0);
 			ANTLRStringStream cod = new ANTLRStringStream(line);
