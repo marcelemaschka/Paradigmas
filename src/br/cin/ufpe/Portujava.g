@@ -46,6 +46,7 @@ comando returns [Comando rv]
   | cmd=se
   | cmd=enquanto
   | cmd=comando_expressao
+  | cmd=para
   )
   { $rv = $cmd.rv; }
   ;
@@ -80,7 +81,7 @@ declaracao_de_funcao returns [Comando rv]
   { $rv = new DeclaracaoDeFuncao($nome.rv, parametros, $bloco.rv); }
   ;
   
-atribuicao returns [Comando rv]
+atribuicao returns [Atribuicao rv]
   :
   (identificador '=' expressao ';')
   { $rv = new Atribuicao($identificador.rv, $expressao.rv); }
@@ -96,7 +97,14 @@ enquanto returns [Comando rv]
   :
   ('enquanto' exp=expressao_entre_parentesis bloco )
   { $rv = new Enquanto($exp.rv, $bloco.rv); }
-  ;  
+  ; 
+
+para returns [Comando rv]
+  :
+  ('para('atr=atribuicao exp=comparacao';'com=comando')' bl=bloco )
+  {$rv = new Para($atr.rv, $exp.rv, $com.rv, $bl.rv);}
+  ;
+   
   
 // Para facilitar a leitura, definimos as expressoes em ordem inversa de precedencia
 expressao returns [Expressao rv]
@@ -184,8 +192,8 @@ multiplicacao returns [Expressao rv]
   
 expressao_primaria returns [Expressao rv]
 // regra que serve para identificar as expressoes de maior precedencia na linguagem
-// por enquanto somente átomos e chamadas de funcao estão nesta categoria, futuramente
-// pode ser usada para outras operaçoes, tipo accessar o atributos de uma instancia
+// por enquanto somente ï¿½tomos e chamadas de funcao estï¿½o nesta categoria, futuramente
+// pode ser usada para outras operaï¿½oes, tipo accessar o atributos de uma instancia
   :
   atomo { $rv = $atomo.rv; }
   (
@@ -209,7 +217,7 @@ atomo returns [Expressao rv]
 // Nessa regra temos que atribuir o valor de retorno dentro de cada caso
 // pois a regra 'identificador' retorna um objeto do tipo 'Identificador'
 // e as outras regras retornam objetos do tipo 'Expressao'. Normalmente isso
-// nao seria problema pois um 'Identificador' é tambem uma 'Expressao' mas
+// nao seria problema pois um 'Identificador' ï¿½ tambem uma 'Expressao' mas
 // o antlr nao aceita isso   
   :  
   (    

@@ -8,4 +8,12 @@ public class Programa extends Bloco {
 		super(comandos);		
 	}
 
+	@Override
+	protected Escopo configurarEscopo(Escopo escopo) {
+	
+		return escopo;
+	}
+	
+	
+
 }

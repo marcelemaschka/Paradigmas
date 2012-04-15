@@ -11,9 +11,18 @@ public class Bloco extends Nodo {
 	public Bloco(List<Comando> comandos) {
 		this.comandos = comandos;
 	}
+	
+	
+	
+	protected Escopo configurarEscopo(Escopo escopo){
+		return new Escopo(escopo);
+	}
 
 	public void executar(Escopo escopo) throws Retorno {
+		
+		Escopo escopoLocal=configurarEscopo(escopo);
+		
 		for (Comando comando : comandos)
-			comando.executar(escopo);
+			comando.executar(escopoLocal);
 	}
 }

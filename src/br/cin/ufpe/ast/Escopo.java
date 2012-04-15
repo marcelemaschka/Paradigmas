@@ -23,4 +23,14 @@ public class Escopo extends HashMap<String, Object> {
 			return superEscopo.get(key);
 		return null;
 	}
+
+	@Override
+	public Object put(String key, Object value) {
+		if(superEscopo!=null&&superEscopo.get(key)!=null){
+			return superEscopo.put(key, value);
+		}
+		return super.put(key, value);
+	}
+	
+	
 }

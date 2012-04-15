@@ -14,7 +14,11 @@ public class Identificador extends Expressao {
 
 	@Override
 	public Object valor(Escopo escopo) {
-		return escopo.get(nome);
+		Object valor= escopo.get(nome);
+		if(valor==null){
+			throw new IllegalArgumentException("Variável "+nome+" não foi declarada");
+		}
+		return valor;
 	}
 
 	@Override
