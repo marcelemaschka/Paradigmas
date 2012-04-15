@@ -141,6 +141,13 @@ public class TestExpressoes {
 	public void numeroNegativoExprBinaria() throws RecognitionException {
 		assertEquals(-10.0, calcular("5 *    -2"));
 	}
+	
+	
+	@Test
+	public void expressaoUnaria() throws RecognitionException{
+		assertEquals(false, calcular("5>1<<1*3"));
+		assertEquals(16, calcular( "128>>6/2"));
+	}
 
 	@Test
 	public void soma() throws RecognitionException {

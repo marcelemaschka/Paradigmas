@@ -91,7 +91,26 @@ public class ExpressaoBinaria extends Expressao {
 			return esq.doubleValue() == dir.doubleValue();
 		else if (operador.equals("!="))
 			return esq.doubleValue() != dir.doubleValue();
+		else if(operador.equals("&")||operador.equals("|")||operador.equals(">>")||operador.equals("<<")){
+			return bitwise(esq, dir);
+		}
 		throw new UnsupportedOperationException();
+	}
+
+	private Integer bitwise(Number esq, Number dir) {
+		if(esq.doubleValue()-esq.intValue()==0&&dir.doubleValue()-dir.intValue()==0){
+			if(operador.equals("&")){
+				return esq.intValue()&dir.intValue();
+			}else if(operador.equals("|")){
+				return esq.intValue()|dir.intValue();
+			}else if(operador.equals(">>")){
+				return esq.intValue()>>dir.intValue();
+			}else if(operador.equals("<<")){
+				return esq.intValue()<<dir.intValue();
+			}
+		}
+		throw new UnsupportedOperationException();
+		
 	}
 
 	@Override

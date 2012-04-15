@@ -226,7 +226,7 @@ conjuncao returns [Expressao rv]
 
 comparacao returns [Expressao rv]
   :
-  (esq=soma 
+  (esq=bitwise 
            {
             $rv = $esq.rv;
            })
@@ -240,12 +240,34 @@ comparacao returns [Expressao rv]
       | '=='
       | '!='
     )
+    dir=bitwise 
+            {
+             $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
+            }
+  )*
+  ;
+  
+bitwise returns [Expressao rv]
+:
+(esq=soma 
+           {
+            $rv = $esq.rv;
+           })
+  (
+    op=
+    (
+      '&'
+      |'|'
+      |'>>'
+      |'<<'
+    )
     dir=soma 
             {
              $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
             }
   )*
   ;
+
 
 soma returns [Expressao rv]
   :
