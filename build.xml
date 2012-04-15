@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="interpretador_interativo" name="Create Runnable Jar for Project Paradigmas">
+	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
+	<!--ANT 1.7 is required                                        -->
+	<target name="interpretador_interativo">
+		<jar destfile="bin/interativo.jar">
+			<manifest>
+				<attribute name="Main-Class" value="br.cin.ufpe.interpretador.InterpretadorInterativo" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="bin">
+				<exclude name="*.jar" />
+			</fileset>
+			<zipfileset excludes="META-INF/*.SF" src="lib/antlr.jar" />
+		</jar>
+	</target>
+</project>

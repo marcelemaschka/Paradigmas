@@ -11,7 +11,7 @@ public class Atribuicao extends Comando {
 	}
 
 	@Override
-	public void executar(Escopo escopo) {
+	public void executarCmd(Escopo escopo) {
 		escopo.put(identificador.getNome(), expressao.valor(escopo));
 	}
 }

@@ -9,7 +9,7 @@ public class Retornar extends Comando {
 	}
 
 	@Override
-	public void executar(Escopo escopo) throws Retorno {
+	public void executarCmd(Escopo escopo) throws Retorno {
 		throw new Retorno(expressao.valor(escopo));
 	}
 

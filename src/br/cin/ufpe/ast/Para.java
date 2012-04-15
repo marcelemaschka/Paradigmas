@@ -23,7 +23,7 @@ public class Para extends Comando{
 	private Bloco bloco;
 
 	@Override
-	public void executar(Escopo escopo) throws Retorno {
+	public void executarCmd(Escopo escopo) throws Retorno {
 		
 		atribuicaoInicial.executar(escopo);
 		while((Boolean)expressaoComparacao.valor(escopo)==true){

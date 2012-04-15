@@ -512,16 +512,13 @@ IDENTIFICADOR
 
 ESPACO_EM_BRANCO
   :
-  (
-    ' '
-    | '\n'
-    | '\t'
-  )+
-  
-  {
-   $channel = HIDDEN;
-  }
+
+  (' '|'\n'|'\r'|'\t')+
+  { $channel = HIDDEN; }
   ;
+
+  
+ 
 
 COMENTARIO_LINHA
   :

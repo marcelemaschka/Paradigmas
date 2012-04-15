@@ -48,5 +48,4 @@ public class TestFuncoes {
 		executar("funcao fatorial(n) { se(n == 1) { retornar 1; } retornar n * fatorial(n-1); } y = fatorial(5);");
 		assertEquals(120.0, escopo.get("y"));		
 	}
-
 }
