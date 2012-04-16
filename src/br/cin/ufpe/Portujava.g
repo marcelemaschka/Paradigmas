@@ -24,14 +24,14 @@ package br.cin.ufpe;
 @members {
 @Override
 public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-	throw new RuntimeException(e);
+  throw new RuntimeException(e);
 }
 }
 
 @lexer::members {
 @Override
 public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-	throw new RuntimeException(e);
+  throw new RuntimeException(e);
 }
 }
 
@@ -421,32 +421,34 @@ atomo returns [Expressao rv]
 
 lista returns [Expressao rv]
   :
-  '['
-  (
-    exp=lista_de_expressoes
-    | exp=range
-  )
-  ']' 
-     {
-      $rv = $exp.rv;
-     }
+  '[' exp=gerador ']' 
+                     {
+                      $rv = new Lista($exp.rv);
+                     }
   ;
 
 expressao_geradora returns [Expressao rv]
   // regra que retorna iteradores
   :
-  '<'
-  (
-    exp=lista_de_expressoes
-    | exp=range
-  )
-  '>' 
-     {
-      $rv = $exp.rv;
-     }
+  '<' exp=gerador '>' 
+                     {
+                      $rv = $exp.rv;
+                     }
   ;
 
-lista_de_expressoes returns [ListaDeExpressoes rv]
+gerador returns [Expressao rv]
+  :
+  (
+    exp=range
+    | exp=lista_de_expressoes
+  )
+  
+  {
+   $rv = $exp.rv;
+  }
+  ;
+
+lista_de_expressoes returns [Expressao rv]
 @init {
 ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
 }
@@ -466,7 +468,7 @@ ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
 
 range returns [Expressao rv]
   :
-  (inicio=inteiro '..' fim=inteiro (',' passo=inteiro)?) 
+  (inicio=inteiro '->' fim=inteiro (',' passo=inteiro)?) 
                                                         {
                                                          $rv = new Range($inicio.rv, $fim.rv, $passo.rv);
                                                         }
@@ -499,8 +501,8 @@ expressao_unaria returns [Expressao rv]
 valor returns [Expressao rv]
   :
   (
-    exp=decimal
-    | exp=inteiro
+    exp=inteiro
+    | exp=decimal
     | exp=texto
     | exp=booleano
   )
@@ -554,15 +556,16 @@ booleano returns [Expressao rv]
   }
   ;
 
+INTEIRO
+  :
+  ('0'..'9')+
+  ;
+
 DECIMAL
   :
   ('0'..'9')+ '.' ('0'..'9')*
   ;
 
-INTEIRO
-  :
-  ('0'..'9')+
-  ;
 
 TEXTO
 @init {

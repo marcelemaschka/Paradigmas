@@ -1,5 +1,7 @@
 package br.cin.ufpe.ast;
 
+import br.cin.ufpe.runtime.IteravelRange;
+
 public class Range extends Expressao {
 
 	private Inteiro inicio;
@@ -14,8 +16,12 @@ public class Range extends Expressao {
 
 	@Override
 	public Object valor(Escopo escopo) {
-		// TODO Auto-generated method stub
-		return null;
+		Long inicio = (Long) this.inicio.valor(escopo);
+		Long fim = (Long) this.fim.valor(escopo);
+		Long passo = null;
+		if (this.passo != null)
+			passo = (Long) this.passo.valor(escopo);
+		return new IteravelRange(inicio, fim, passo);
 	}
 
 	@Override
@@ -23,7 +29,5 @@ public class Range extends Expressao {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
 
 }

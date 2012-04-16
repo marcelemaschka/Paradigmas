@@ -2,25 +2,17 @@ package br.cin.ufpe.ast;
 
 public class Lista extends Expressao {
 
-	private Range range;
-	private ListaDeExpressoes expressoes;
+	private Expressao expressao;
 
-	public Lista(Range range) {
-		this.range = range;
-	}
-
-	public Lista(ListaDeExpressoes expressoes) {
-		this.expressoes = expressoes;
+	public Lista(Expressao expressao) {
+		this.expressao = expressao;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object valor(Escopo escopo) {
-		Iterable<Object> exprIteravel = null;
-		if (expressoes != null)
-			exprIteravel = (Iterable<Object>) expressoes.valor(escopo);
-		else if (range != null)
-			exprIteravel = (Iterable<Object>) range.valor(escopo);
+		Iterable<Object> exprIteravel = (Iterable<Object>) expressao
+				.valor(escopo);
 		return new br.cin.ufpe.runtime.Lista(exprIteravel);
 	}
 

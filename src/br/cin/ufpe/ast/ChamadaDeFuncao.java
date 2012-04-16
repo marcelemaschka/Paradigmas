@@ -8,9 +8,9 @@ import br.cin.ufpe.runtime.Closure;
 public class ChamadaDeFuncao extends Expressao {
 
 	private Expressao expressao;
-	private ListaDeExpressoes args;
+	private Expressao args;
 
-	public ChamadaDeFuncao(Expressao expressao, ListaDeExpressoes args) {
+	public ChamadaDeFuncao(Expressao expressao, Expressao args) {
 		this.expressao = expressao;
 		this.args = args;
 	}

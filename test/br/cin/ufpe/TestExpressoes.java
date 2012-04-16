@@ -2,6 +2,7 @@ package br.cin.ufpe;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -149,6 +150,7 @@ public class TestExpressoes {
 	public void comparacaoMalFormada() throws RecognitionException, Retorno {
 		try {
 			executar("x=0;se(3>2>1){x=1;}");
+			fail("Esperando erro de sintaxe");
 		} catch (RuntimeException e) {
 			assertTrue(e.getCause() instanceof MismatchedTokenException);
 		}
@@ -210,5 +212,29 @@ public class TestExpressoes {
 		assertEquals(3L, val.get(1));
 		assertEquals(13L, val.get(2));
 		assertEquals("abc", val.get(3));
+	}
+
+	@Test
+	public void listaConstruidaComRange() throws RecognitionException {
+		@SuppressWarnings("unchecked")
+		List<Object> val = (List<Object>) calcular("[1->4]");
+		assertEquals(4, val.size());
+		assertEquals(1L, val.get(0));
+		assertEquals(2L, val.get(1));
+		assertEquals(3L, val.get(2));
+		assertEquals(4L, val.get(3));
+	}
+	
+	@Test
+	public void listaConstruidaComRangeDescrescenteEPasso() throws RecognitionException {
+		@SuppressWarnings("unchecked")
+		List<Object> val = (List<Object>) calcular("[10->1, 2]");
+		assertEquals(6, val.size());
+		assertEquals(10L, val.get(0));
+		assertEquals(8L, val.get(1));
+		assertEquals(6L, val.get(2));
+		assertEquals(4L, val.get(3));
+		assertEquals(2L, val.get(4));
+		assertEquals(1L, val.get(5));
 	}
 }
