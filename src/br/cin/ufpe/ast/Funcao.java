@@ -3,6 +3,7 @@ package br.cin.ufpe.ast;
 import java.util.List;
 
 import br.cin.ufpe.runtime.Closure;
+import br.cin.ufpe.runtime.Escopo;
 
 
 public class Funcao extends Expressao {
