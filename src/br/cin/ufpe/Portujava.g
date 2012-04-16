@@ -24,14 +24,14 @@ package br.cin.ufpe;
 @members {
 @Override
 public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-  throw new RuntimeException(e);
+	throw new RuntimeException(e);
 }
 }
 
 @lexer::members {
 @Override
 public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-  throw new RuntimeException(e);
+	throw new RuntimeException(e);
 }
 }
 
@@ -182,10 +182,10 @@ enquanto returns [Comando rv]
 
 para returns [Comando rv]
   :
-  ('para(' atr=atribuicao ';' exp=comparacao_igualdade ';' com=comando_execucao ')' bl=bloco) 
-                                                                                             {
-                                                                                              $rv = new Para($atr.rv, $exp.rv, $com.rv, $bl.rv);
-                                                                                             }
+  ('para' id=identificador 'em' exp=expressao bl=bloco) 
+                                                       {
+                                                        $rv = new Para($id.rv, $exp.rv, $bl.rv);
+                                                       }
   ;
 
 // Para facilitar a leitura, definimos as expressoes em ordem inversa de precedencia
@@ -565,7 +565,6 @@ DECIMAL
   :
   ('0'..'9')+ '.' ('0'..'9')*
   ;
-
 
 TEXTO
 @init {
