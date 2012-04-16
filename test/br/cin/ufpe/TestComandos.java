@@ -63,8 +63,7 @@ public class TestComandos {
 
 	@Test
 	public void para() throws RecognitionException, Retorno {
-
-		executar("fatorial=1;para(x=10;x>0;x=x-1){fatorial=fatorial*x;}");
+		executar("fatorial=1;para x em <10->1> {fatorial=fatorial*x;}");
 		assertEquals(3628800.0, escopo.get("fatorial"));
 	}
 
