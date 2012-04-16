@@ -459,7 +459,7 @@ ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
 
 range returns [Expressao rv]
   :
-  (inicio=inteiro '=>' fim=inteiro (',' passo=inteiro)?) 
+  (inicio=inteiro A fim=inteiro (',' passo=inteiro)?) 
                                                         {
                                                          $rv = new Range($inicio.rv, $fim.rv, $passo.rv);
                                                         }
@@ -505,7 +505,7 @@ valor returns [Expressao rv]
 
 identificador returns [Identificador rv]
   :
-  (t=IDENTIFICADOR) 
+  (t=IDENTIFICADOR|t=A) 
                    {
                     $rv = new Identificador($t.text);
                    }
@@ -615,6 +615,11 @@ VERDADEIRO
 FALSO
   :
   'falso'
+  ;
+  
+A
+  :
+  'a'
   ;
 
 IDENTIFICADOR

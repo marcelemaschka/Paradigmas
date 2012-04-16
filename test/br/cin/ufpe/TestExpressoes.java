@@ -217,7 +217,7 @@ public class TestExpressoes {
 	@Test
 	public void listaConstruidaComRange() throws RecognitionException {
 		@SuppressWarnings("unchecked")
-		List<Object> val = (List<Object>) calcular("[1=>4]");
+		List<Object> val = (List<Object>) calcular("[1 a 4]");
 		assertEquals(4, val.size());
 		assertEquals(1L, val.get(0));
 		assertEquals(2L, val.get(1));
@@ -228,7 +228,7 @@ public class TestExpressoes {
 	@Test
 	public void listaConstruidaComRangeDescrescenteEPasso() throws RecognitionException {
 		@SuppressWarnings("unchecked")
-		List<Object> val = (List<Object>) calcular("[10=>1, 2]");
+		List<Object> val = (List<Object>) calcular("[10 a 1, 2]");
 		assertEquals(6, val.size());
 		assertEquals(10L, val.get(0));
 		assertEquals(8L, val.get(1));

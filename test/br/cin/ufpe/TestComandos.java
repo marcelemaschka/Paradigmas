@@ -32,6 +32,12 @@ public class TestComandos {
 	}
 
 	@Test
+	public void atribuicaoSimples() throws RecognitionException, Retorno {
+		executar("a = 2;");
+		assertEquals(2L, escopo.get("a"));
+	}
+
+	@Test
 	public void atribuicao() throws RecognitionException, Retorno {
 		executar("x = 5 + 3 * 10;");
 		assertEquals(35.0, escopo.get("x"));
@@ -65,7 +71,7 @@ public class TestComandos {
 
 	@Test
 	public void para() throws RecognitionException, Retorno {
-		executar("fatorial=1;para x em :10=>1: {fatorial=fatorial*x;}");
+		executar("fatorial=1;para x em :10 a 1: {fatorial=fatorial*x;}");
 		assertEquals(3628800.0, escopo.get("fatorial"));
 	}
 
