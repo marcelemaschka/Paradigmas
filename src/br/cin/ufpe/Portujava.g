@@ -16,22 +16,22 @@ package br.cin.ufpe;
 package br.cin.ufpe;
 }
 
-// Todos os erros de sintaxe podem ser capturados/traduzidos 
+// Todos os erros de sintaxe podem ser capturados/traduzidos
 // simplesmente sobrescrevendo o método que cuida de imprimir
 // a mensagem de erro e fazendo o parser jogar um RuntimeException
-// que encapsula a excecao real. 
+// que encapsula a excecao real.
 
 @members {
 @Override
 public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-	throw new RuntimeException(e);	
+	throw new RuntimeException(e);
 }
 }
 
 @lexer::members {
 @Override
 public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
-  throw new RuntimeException(e);  
+	throw new RuntimeException(e);
 }
 }
 
@@ -371,8 +371,8 @@ multiplicacao returns [Expressao rv]
 
 expressao_primaria returns [Expressao rv]
   // regra que serve para identificar as expressoes de maior precedencia na linguagem
-  // por enquanto somente �tomos e chamadas de funcao est�o nesta categoria, futuramente
-  // pode ser usada para outras opera�oes, tipo accessar o atributos de uma instancia
+  // por enquanto somente átomos e chamadas de funcao estão nesta categoria, futuramente
+  // pode ser usada para outras operaçoes, tipo accessar o atributos de uma instancia
   :
   atomo 
        {
@@ -384,36 +384,26 @@ expressao_primaria returns [Expressao rv]
                                   }))*
   ;
 
-lista_de_expressoes returns [List < Expressao > rv]
-@init {
-ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
-}
-  :
-  (exp1=expressao 
-                 {
-                  expressoes.add($exp1.rv);
-                 }
-    (',' expn=expressao 
-                       {
-                        expressoes.add($expn.rv);
-                       })*)? 
-                            {
-                             $rv = expressoes;
-                            }
-  ;
-
 atomo returns [Expressao rv]
   // Nessa regra temos que atribuir o valor de retorno dentro de cada caso
   // pois a regra 'identificador' retorna um objeto do tipo 'Identificador'
   // e as outras regras retornam objetos do tipo 'Expressao'. Normalmente isso
-  // nao seria problema pois um 'Identificador' � tambem uma 'Expressao' mas
+  // nao seria problema pois um 'Identificador' é tambem uma 'Expressao' mas
   // o antlr nao aceita isso
   :
   (
-    (expressao_entre_parentesis 
-                               {
-                                $rv = $expressao_entre_parentesis.rv;
-                               })
+    (lista 
+          {
+           $rv = $lista.rv;
+          })
+    | (expressao_geradora 
+                         {
+                          $rv = $expressao_geradora.rv;
+                         })
+    | (expressao_entre_parentesis 
+                                 {
+                                  $rv = $expressao_entre_parentesis.rv;
+                                 })
     | (expressao_unaria 
                        {
                         $rv = $expressao_unaria.rv;
@@ -427,6 +417,59 @@ atomo returns [Expressao rv]
                      $rv = $identificador.rv;
                     })
   )
+  ;
+
+lista returns [Expressao rv]
+  :
+  '['
+  (
+    exp=lista_de_expressoes
+    | exp=range
+  )
+  ']' 
+     {
+      $rv = $exp.rv;
+     }
+  ;
+
+expressao_geradora returns [Expressao rv]
+  // regra que retorna iteradores
+  :
+  '<'
+  (
+    exp=lista_de_expressoes
+    | exp=range
+  )
+  '>' 
+     {
+      $rv = $exp.rv;
+     }
+  ;
+
+lista_de_expressoes returns [ListaDeExpressoes rv]
+@init {
+ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
+}
+  :
+  (exp1=expressao 
+                 {
+                  expressoes.add($exp1.rv);
+                 }
+    (',' expn=expressao 
+                       {
+                        expressoes.add($expn.rv);
+                       })*)? 
+                            {
+                             $rv = new ListaDeExpressoes(expressoes);
+                            }
+  ;
+
+range returns [Expressao rv]
+  :
+  (inicio=inteiro '..' fim=inteiro (',' passo=inteiro)?) 
+                                                        {
+                                                         $rv = new Range($inicio.rv, $fim.rv, $passo.rv);
+                                                        }
   ;
 
 expressao_entre_parentesis returns [Expressao rv]
@@ -483,7 +526,7 @@ decimal returns [Expressao rv]
            }
   ;
 
-inteiro returns [Expressao rv]
+inteiro returns [Inteiro rv]
   :
   t=INTEIRO 
            {

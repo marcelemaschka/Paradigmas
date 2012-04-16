@@ -1,20 +1,21 @@
 package br.cin.ufpe.ast;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import br.cin.ufpe.ast.Funcao.Closure;
+import br.cin.ufpe.runtime.Closure;
+
 
 public class ChamadaDeFuncao extends Expressao {
 
 	private Expressao expressao;
-	private List<Expressao> args;
+	private ListaDeExpressoes args;
 
-	public ChamadaDeFuncao(Expressao expressao, List<Expressao> args) {
+	public ChamadaDeFuncao(Expressao expressao, ListaDeExpressoes args) {
 		this.expressao = expressao;
 		this.args = args;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object valor(Escopo escopo) {
 		Object alvo = null;
@@ -22,12 +23,9 @@ public class ChamadaDeFuncao extends Expressao {
 			alvo = ((Identificador) expressao).valor(escopo);
 		if (!(alvo instanceof Closure))
 			throw new UnsupportedOperationException(
-					"Só é possível chamar funções");
+					"SÃ³ Ã© possÃ­vel chamar funÃ§Ãµes");
 		Closure closure = (Closure) alvo;
-		ArrayList<Object> args = new ArrayList<Object>();
-		for (Expressao exp : this.args)
-			args.add(exp.valor(escopo));
-		return closure.chamar(args);
+		return closure.chamar((List<Object>) args.valor(escopo));
 	}
 
 	@Override

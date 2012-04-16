@@ -3,6 +3,8 @@ package br.cin.ufpe;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.MismatchedTokenException;
@@ -199,4 +201,14 @@ public class TestExpressoes {
 		assertEquals(56.0, calcular("8*(2+    5)"));
 	}
 
+	@Test
+	public void lista() throws RecognitionException {
+		@SuppressWarnings("unchecked")
+		List<Object> val = (List<Object>) calcular("[7,3,13,'abc']");
+		assertEquals(4, val.size());
+		assertEquals(7L, val.get(0));
+		assertEquals(3L, val.get(1));
+		assertEquals(13L, val.get(2));
+		assertEquals("abc", val.get(3));
+	}
 }
