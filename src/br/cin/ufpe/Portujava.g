@@ -430,7 +430,7 @@ expressao_geradora returns [Expressao rv]
 gerador returns [Expressao rv]
   :
   (
-    exp=range
+    exp=intervalo
     | exp=lista_de_expressoes
   )
   
@@ -457,7 +457,7 @@ ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
                             }
   ;
 
-range returns [Expressao rv]
+intervalo returns [Expressao rv]
   :
   (inicio=inteiro A fim=inteiro (',' passo=inteiro)?) 
                                                         {

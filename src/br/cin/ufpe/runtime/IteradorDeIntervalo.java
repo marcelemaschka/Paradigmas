@@ -2,7 +2,7 @@ package br.cin.ufpe.runtime;
 
 import java.util.Iterator;
 
-public class IteravelRange implements Iterable<Object>, Iterator<Object> {
+public class IteradorDeIntervalo implements Iterable<Object>, Iterator<Object> {
 
 	private Long inicio;
 	private Long fim;
@@ -11,10 +11,10 @@ public class IteravelRange implements Iterable<Object>, Iterator<Object> {
 	private boolean aumentando;
 	private boolean temProx;
 
-	public IteravelRange(Long inicio, Long fim, Long passo) {
+	public IteradorDeIntervalo(Long inicio, Long fim, Long passo) {
 		if (inicio == fim)
 			throw new IllegalArgumentException(
-					"Valores de inÃ­cio e fim devem ser diferentes");
+					"Valores de início e fim devem ser diferentes");
 
 		this.inicio = inicio;
 		this.fim = fim;

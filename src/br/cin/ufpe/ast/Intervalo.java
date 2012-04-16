@@ -1,15 +1,15 @@
 package br.cin.ufpe.ast;
 
 import br.cin.ufpe.runtime.Escopo;
-import br.cin.ufpe.runtime.IteravelRange;
+import br.cin.ufpe.runtime.IteradorDeIntervalo;
 
-public class Range extends Expressao {
+public class Intervalo extends Expressao {
 
 	private Inteiro inicio;
 	private Inteiro fim;
 	private Inteiro passo;
 
-	public Range(Inteiro inicio, Inteiro fim, Inteiro passo) {
+	public Intervalo(Inteiro inicio, Inteiro fim, Inteiro passo) {
 		this.inicio = inicio;
 		this.fim = fim;
 		this.passo = passo;
@@ -22,7 +22,7 @@ public class Range extends Expressao {
 		Long passo = null;
 		if (this.passo != null)
 			passo = (Long) this.passo.valor(escopo);
-		return new IteravelRange(inicio, fim, passo);
+		return new IteradorDeIntervalo(inicio, fim, passo);
 	}
 
 	@Override
