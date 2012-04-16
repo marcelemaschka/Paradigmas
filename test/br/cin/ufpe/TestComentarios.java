@@ -7,9 +7,9 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
-import br.cin.ufpe.ast.Escopo;
 import br.cin.ufpe.ast.Programa;
 import br.cin.ufpe.ast.Retornar.Retorno;
+import br.cin.ufpe.runtime.Escopo;
 
 public class TestComentarios {
 

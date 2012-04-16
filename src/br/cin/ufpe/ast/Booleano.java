@@ -1,5 +1,7 @@
 package br.cin.ufpe.ast;
 
+import br.cin.ufpe.runtime.Escopo;
+
 public class Booleano extends Expressao {
 
 	private boolean valor;

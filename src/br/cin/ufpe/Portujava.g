@@ -89,7 +89,6 @@ comando_execucao returns [Comando rv]
     cmd=retornar
     | cmd=atribuicao
     | cmd=comando_expressao
-    | cmd=comando_escrever
   )
   
   {
@@ -117,14 +116,6 @@ comando_expressao returns [Comando rv]
              {
               $rv = $expressao.rv;
              }
-  ;
-
-comando_escrever returns [Comando rv]
-  :
-  cmd='escreva' exp=expressao 
-                             {
-                              $rv = new Escreva($exp.rv);
-                             }
   ;
 
 retornar returns [Comando rv]
@@ -430,7 +421,7 @@ lista returns [Expressao rv]
 expressao_geradora returns [Expressao rv]
   // regra que retorna iteradores
   :
-  '<' exp=gerador '>' 
+  ':' exp=gerador ':' 
                      {
                       $rv = $exp.rv;
                      }
@@ -468,7 +459,7 @@ ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
 
 range returns [Expressao rv]
   :
-  (inicio=inteiro '->' fim=inteiro (',' passo=inteiro)?) 
+  (inicio=inteiro '=>' fim=inteiro (',' passo=inteiro)?) 
                                                         {
                                                          $rv = new Range($inicio.rv, $fim.rv, $passo.rv);
                                                         }
