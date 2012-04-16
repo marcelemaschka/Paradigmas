@@ -17,8 +17,8 @@ public class Se extends Comando {
 
 	@Override
 	public void executarCmd(Escopo escopo) throws Retorno {
-		Object valor = expressao.valor(escopo);
-		if ((valor instanceof Boolean && valor.equals(Boolean.TRUE))
+		Object valor = expressao!=null?expressao.valor(escopo):null;
+		if (valor!=null && (valor instanceof Boolean && valor.equals(Boolean.TRUE))
 				|| (valor instanceof Number && ((Number) valor).doubleValue() != 0.0)
 				|| (valor instanceof String && !valor.toString().trim()
 						.equals(""))) {

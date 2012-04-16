@@ -149,7 +149,7 @@ public class TestExpressoes {
 	
 	@Test
 	public void comparacaoMalFormada() throws RecognitionException, Retorno{
-		executar("x=0;se( 3>2>1){x=1;}");
+		executar("x=0;se(3>2>1){x=1;}");
 		assertEquals(true, parser.getNumberOfSyntaxErrors()>0);
 		executar("x=0;se(0==x==verdadeiro){x=1;}");
 		assertEquals(1L, escopo.get("x"));
@@ -186,6 +186,11 @@ public class TestExpressoes {
 	@Test
 	public void multiplicacao() throws RecognitionException {
 		assertEquals(21.0, calcular("4.2*5"));
+	}
+	
+	@Test
+	public void multiplicacaoString() throws RecognitionException {
+		assertEquals("testeteste", calcular("'teste'*2"));
 	}
 
 	@Test

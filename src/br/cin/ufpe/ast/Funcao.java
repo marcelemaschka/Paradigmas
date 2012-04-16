@@ -34,8 +34,8 @@ public class Funcao extends Expressao {
 			int len = args.size();
 			if (len != parametros.size())
 				throw new IllegalArgumentException(
-						"Função chamada com número de argumentos diferente da declaração.");
-			// o primeiro passo é atribuir os valores dos argumentos
+						"Funï¿½ï¿½o chamada com nï¿½mero de argumentos diferente da declaraï¿½ï¿½o.");
+			// o primeiro passo ï¿½ atribuir os valores dos argumentos
 			// a seus respectivos identificadores
 			Escopo escopo = new Escopo(superEscopo);
 			for (int i = 0; i < len; i++)
@@ -47,6 +47,12 @@ public class Funcao extends Expressao {
 				valorRetorno = e.getValor();
 			}
 			return valorRetorno;
+		}
+	
+	
+		@Override
+		public String toString() {
+			return "<<FunÃ§Ã£o>>";
 		}
 	}
 
