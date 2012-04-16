@@ -234,6 +234,43 @@ conjuncao returns [Expressao rv]
                                             $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
                                            })*
   ;
+  
+bitwise_ou returns [Expressao rv]
+  :
+  (esq=bitwise_e 
+           {
+            $rv = $esq.rv;
+           })
+  (
+    op=
+    (
+      '|'
+    )
+    dir=bitwise_e 
+            {
+             $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
+            }
+  )*
+  ;
+  
+bitwise_e returns [Expressao rv]
+  :
+  (esq=comparacao_igualdade 
+           {
+            $rv = $esq.rv;
+           })
+  (
+    op=
+    (
+      '&'
+    )
+    dir=comparacao_igualdade 
+            {
+             $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
+            }
+  )*
+  ;
+  
 
 comparacao_igualdade returns [Expressao rv]
    :
@@ -241,7 +278,7 @@ comparacao_igualdade returns [Expressao rv]
 
 comparacao_maiormenor returns [Expressao rv]
   :
-  (esq=bitwise 
+  (esq=bitwise_shift 
               {
                $rv = $esq.rv;
               })
@@ -253,14 +290,14 @@ comparacao_maiormenor returns [Expressao rv]
       | '<='
       | '<'
     )
-    dir=bitwise 
+    dir=bitwise_shift 
                {
                 $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
                }
   )?
   ;
 
-bitwise returns [Expressao rv]
+bitwise_shift returns [Expressao rv]
   :
   (esq=soma 
            {
@@ -269,9 +306,7 @@ bitwise returns [Expressao rv]
   (
     op=
     (
-      '&'
-      | '|'
-      | '>>'
+      '>>'
       | '<<'
     )
     dir=soma 
@@ -280,6 +315,8 @@ bitwise returns [Expressao rv]
             }
   )*
   ;
+
+
 
 soma returns [Expressao rv]
   :

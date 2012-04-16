@@ -188,7 +188,7 @@ public class TestExpressoes {
 		assertEquals(21.0, calcular("4.2*5"));
 	}
 	
-	@Test
+	@Test(expected=UnsupportedOperationException.class)
 	public void multiplicacaoString() throws RecognitionException {
 		assertEquals("testeteste", calcular("'teste'*2"));
 	}
