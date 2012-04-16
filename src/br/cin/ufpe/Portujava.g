@@ -14,8 +14,25 @@ package br.cin.ufpe;
 
 @lexer::header {
 package br.cin.ufpe;
+}
 
+// Todos os erros de sintaxe podem ser capturados/traduzidos
+// simplesmente sobrescrevendo o método que cuida de imprimir
+// a mensagem de erro e fazendo o parser jogar um RuntimeException
+// que encapsula a excecao real.
 
+@members {
+@Override
+public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+	throw new RuntimeException(e);
+}
+}
+
+@lexer::members {
+@Override
+public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+	throw new RuntimeException(e);
+}
 }
 
 programa returns [Programa rv]
@@ -96,9 +113,7 @@ comando_fluxo returns [Comando rv]
 
 comando_expressao returns [Comando rv]
   :
-  (
-  expressao
-  ) 
+  (expressao) 
              {
               $rv = $expressao.rv;
              }
@@ -107,9 +122,9 @@ comando_expressao returns [Comando rv]
 comando_escrever returns [Comando rv]
   :
   cmd='escreva' exp=expressao 
-                         {
-                          $rv = new Escreva($exp.rv);
-                         }
+                             {
+                              $rv = new Escreva($exp.rv);
+                             }
   ;
 
 retornar returns [Comando rv]
@@ -167,10 +182,10 @@ enquanto returns [Comando rv]
 
 para returns [Comando rv]
   :
-  ('para(' atr=atribuicao ';' exp=comparacao_igualdade ';' com=comando_execucao ')' bl=bloco) 
-                                                                                   {
-                                                                                    $rv = new Para($atr.rv, $exp.rv, $com.rv, $bl.rv);
-                                                                                   }
+  ('para' id=identificador 'em' exp=expressao bl=bloco) 
+                                                       {
+                                                        $rv = new Para($id.rv, $exp.rv, $bl.rv);
+                                                       }
   ;
 
 // Para facilitar a leitura, definimos as expressoes em ordem inversa de precedencia
@@ -227,61 +242,61 @@ disjuncao returns [Expressao rv]
 conjuncao returns [Expressao rv]
   :
   (esq=comparacao_igualdade 
-                 {
-                  $rv = $esq.rv;
-                 }) (op='&&' dir=comparacao_igualdade 
+                           {
+                            $rv = $esq.rv;
+                           }) (op='&&' dir=comparacao_igualdade 
+                                                               {
+                                                                $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
+                                                               })*
+  ;
+
+bitwise_ou returns [Expressao rv]
+  :
+  (esq=bitwise_e 
+                {
+                 $rv = $esq.rv;
+                }) (op= ('|') dir=bitwise_e 
                                            {
                                             $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
                                            })*
   ;
-  
-bitwise_ou returns [Expressao rv]
-  :
-  (esq=bitwise_e 
-           {
-            $rv = $esq.rv;
-           })
-  (
-    op=
-    (
-      '|'
-    )
-    dir=bitwise_e 
-            {
-             $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
-            }
-  )*
-  ;
-  
+
 bitwise_e returns [Expressao rv]
   :
   (esq=comparacao_igualdade 
-           {
-            $rv = $esq.rv;
-           })
-  (
-    op=
-    (
-      '&'
-    )
-    dir=comparacao_igualdade 
-            {
-             $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
-            }
-  )*
+                           {
+                            $rv = $esq.rv;
+                           }) (op= ('&') dir=comparacao_igualdade 
+                                                                 {
+                                                                  $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
+                                                                 })*
   ;
-  
 
 comparacao_igualdade returns [Expressao rv]
-   :
-   (esq=comparacao_maiormenor{$rv = $esq.rv;}) ((op='=='||op='!=')dir=comparacao_maiormenor{$rv=new ExpressaoBinaria($rv, $dir.rv, $op.text);})*;
+  :
+  (esq=comparacao_maiormenor 
+                            {
+                             $rv = $esq.rv;
+                            })
+  (
+    (
+      op='=='
+      |
+      | op='!='
+    )
+    dir=comparacao_maiormenor 
+                             {
+                              $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
+                             }
+  )*
+  ;
 
 comparacao_maiormenor returns [Expressao rv]
   :
   (esq=bitwise_shift 
-              {
-               $rv = $esq.rv;
-              })
+                    {
+                     $rv = $esq.rv;
+                    })
   (
     op=
     (
@@ -291,9 +306,9 @@ comparacao_maiormenor returns [Expressao rv]
       | '<'
     )
     dir=bitwise_shift 
-               {
-                $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
-               }
+                     {
+                      $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
+                     }
   )?
   ;
 
@@ -315,8 +330,6 @@ bitwise_shift returns [Expressao rv]
             }
   )*
   ;
-
-
 
 soma returns [Expressao rv]
   :
@@ -358,8 +371,8 @@ multiplicacao returns [Expressao rv]
 
 expressao_primaria returns [Expressao rv]
   // regra que serve para identificar as expressoes de maior precedencia na linguagem
-  // por enquanto somente �tomos e chamadas de funcao est�o nesta categoria, futuramente
-  // pode ser usada para outras opera�oes, tipo accessar o atributos de uma instancia
+  // por enquanto somente átomos e chamadas de funcao estão nesta categoria, futuramente
+  // pode ser usada para outras operaçoes, tipo accessar o atributos de uma instancia
   :
   atomo 
        {
@@ -371,36 +384,26 @@ expressao_primaria returns [Expressao rv]
                                   }))*
   ;
 
-lista_de_expressoes returns [List < Expressao > rv]
-@init {
-ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
-}
-  :
-  (exp1=expressao 
-                 {
-                  expressoes.add($exp1.rv);
-                 }
-    (',' expn=expressao 
-                       {
-                        expressoes.add($expn.rv);
-                       })*)? 
-                            {
-                             $rv = expressoes;
-                            }
-  ;
-
 atomo returns [Expressao rv]
   // Nessa regra temos que atribuir o valor de retorno dentro de cada caso
   // pois a regra 'identificador' retorna um objeto do tipo 'Identificador'
   // e as outras regras retornam objetos do tipo 'Expressao'. Normalmente isso
-  // nao seria problema pois um 'Identificador' � tambem uma 'Expressao' mas
+  // nao seria problema pois um 'Identificador' é tambem uma 'Expressao' mas
   // o antlr nao aceita isso
   :
   (
-    (expressao_entre_parentesis 
-                               {
-                                $rv = $expressao_entre_parentesis.rv;
-                               })
+    (lista 
+          {
+           $rv = $lista.rv;
+          })
+    | (expressao_geradora 
+                         {
+                          $rv = $expressao_geradora.rv;
+                         })
+    | (expressao_entre_parentesis 
+                                 {
+                                  $rv = $expressao_entre_parentesis.rv;
+                                 })
     | (expressao_unaria 
                        {
                         $rv = $expressao_unaria.rv;
@@ -414,6 +417,61 @@ atomo returns [Expressao rv]
                      $rv = $identificador.rv;
                     })
   )
+  ;
+
+lista returns [Expressao rv]
+  :
+  '[' exp=gerador ']' 
+                     {
+                      $rv = new Lista($exp.rv);
+                     }
+  ;
+
+expressao_geradora returns [Expressao rv]
+  // regra que retorna iteradores
+  :
+  '<' exp=gerador '>' 
+                     {
+                      $rv = $exp.rv;
+                     }
+  ;
+
+gerador returns [Expressao rv]
+  :
+  (
+    exp=range
+    | exp=lista_de_expressoes
+  )
+  
+  {
+   $rv = $exp.rv;
+  }
+  ;
+
+lista_de_expressoes returns [Expressao rv]
+@init {
+ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
+}
+  :
+  (exp1=expressao 
+                 {
+                  expressoes.add($exp1.rv);
+                 }
+    (',' expn=expressao 
+                       {
+                        expressoes.add($expn.rv);
+                       })*)? 
+                            {
+                             $rv = new ListaDeExpressoes(expressoes);
+                            }
+  ;
+
+range returns [Expressao rv]
+  :
+  (inicio=inteiro '->' fim=inteiro (',' passo=inteiro)?) 
+                                                        {
+                                                         $rv = new Range($inicio.rv, $fim.rv, $passo.rv);
+                                                        }
   ;
 
 expressao_entre_parentesis returns [Expressao rv]
@@ -443,8 +501,8 @@ expressao_unaria returns [Expressao rv]
 valor returns [Expressao rv]
   :
   (
-    exp=decimal
-    | exp=inteiro
+    exp=inteiro
+    | exp=decimal
     | exp=texto
     | exp=booleano
   )
@@ -470,7 +528,7 @@ decimal returns [Expressao rv]
            }
   ;
 
-inteiro returns [Expressao rv]
+inteiro returns [Inteiro rv]
   :
   t=INTEIRO 
            {
@@ -498,14 +556,14 @@ booleano returns [Expressao rv]
   }
   ;
 
-DECIMAL
-  :
-  ('0'..'9')+ '.' ('0'..'9')*
-  ;
-
 INTEIRO
   :
   ('0'..'9')+
+  ;
+
+DECIMAL
+  :
+  ('0'..'9')+ '.' ('0'..'9')*
   ;
 
 TEXTO
