@@ -9,19 +9,39 @@ import org.junit.Test;
 
 import br.cin.ufpe.ast.Escopo;
 import br.cin.ufpe.ast.Expressao;
+import br.cin.ufpe.ast.Programa;
+import br.cin.ufpe.ast.Retornar.Retorno;
 
 public class TestExpressoes {
 
 	private Escopo escopo;
+	private PortujavaParser parser;
 
 	public Object calcular(String codigo) throws RecognitionException {
 		escopo = new Escopo();
 		ANTLRStringStream cod = new ANTLRStringStream(codigo);
 		PortujavaLexer lexer = new PortujavaLexer(cod);
-		PortujavaParser parser = new PortujavaParser(new CommonTokenStream(
+		parser = new PortujavaParser(new CommonTokenStream(
 				lexer));
 		Expressao exp = parser.expressao();
+		if(parser.getNumberOfSyntaxErrors()>0){
+			return null;
+		}
 		return exp.valor(escopo);
+	}
+	
+	
+	public void executar(String codigo) throws RecognitionException, Retorno {
+		escopo = new Escopo();
+		ANTLRStringStream cod = new ANTLRStringStream(codigo);
+		PortujavaLexer lexer = new PortujavaLexer(cod);
+		parser = new PortujavaParser(new CommonTokenStream(
+				lexer));
+		Programa prog = parser.programa();
+		if(parser.getNumberOfSyntaxErrors()>0){
+			return ;
+		}
+		prog.executar(escopo);
 	}
 
 	@Test
@@ -124,6 +144,15 @@ public class TestExpressoes {
 		assertEquals(true, calcular("falso==verdadeiro==(1-2==3))"));
 		assertEquals(true, calcular("falso==falso==verdadeiro==falso==falso"));
 		assertEquals(false, calcular("1<2==(3>4)==falso==(12<=3*4)==falso"));
+		
+	}
+	
+	@Test
+	public void comparacaoMalFormada() throws RecognitionException, Retorno{
+		executar("x=0;se( 3>2>1){x=1;}");
+		assertEquals(true, parser.getNumberOfSyntaxErrors()>0);
+		executar("x=0;se(0==x==verdadeiro){x=1;}");
+		assertEquals(1L, escopo.get("x"));
 		
 	}
 

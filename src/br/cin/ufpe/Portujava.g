@@ -14,6 +14,8 @@ package br.cin.ufpe;
 
 @lexer::header {
 package br.cin.ufpe;
+
+
 }
 
 programa returns [Programa rv]
@@ -165,7 +167,7 @@ enquanto returns [Comando rv]
 
 para returns [Comando rv]
   :
-  ('para(' atr=atribuicao ';' exp=comparacao ';' com=comando_execucao ')' bl=bloco) 
+  ('para(' atr=atribuicao ';' exp=comparacao_igualdade ';' com=comando_execucao ')' bl=bloco) 
                                                                                    {
                                                                                     $rv = new Para($atr.rv, $exp.rv, $com.rv, $bl.rv);
                                                                                    }
@@ -224,16 +226,20 @@ disjuncao returns [Expressao rv]
 
 conjuncao returns [Expressao rv]
   :
-  (esq=comparacao 
+  (esq=comparacao_igualdade 
                  {
                   $rv = $esq.rv;
-                 }) (op='&&' dir=comparacao 
+                 }) (op='&&' dir=comparacao_igualdade 
                                            {
                                             $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
                                            })*
   ;
 
-comparacao returns [Expressao rv]
+comparacao_igualdade returns [Expressao rv]
+   :
+   (esq=comparacao_maiormenor{$rv = $esq.rv;}) ((op='=='||op='!=')dir=comparacao_maiormenor{$rv=new ExpressaoBinaria($rv, $dir.rv, $op.text);})*;
+
+comparacao_maiormenor returns [Expressao rv]
   :
   (esq=bitwise 
               {
@@ -246,14 +252,12 @@ comparacao returns [Expressao rv]
       | '>'
       | '<='
       | '<'
-      | '=='
-      | '!='
     )
     dir=bitwise 
                {
                 $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
                }
-  )*
+  )?
   ;
 
 bitwise returns [Expressao rv]
