@@ -10,9 +10,9 @@ import org.antlr.runtime.RecognitionException;
 
 import br.cin.ufpe.PortujavaLexer;
 import br.cin.ufpe.PortujavaParser;
-import br.cin.ufpe.ast.Escopo;
 import br.cin.ufpe.ast.Programa;
 import br.cin.ufpe.ast.Retornar.Retorno;
+import br.cin.ufpe.runtime.Escopo;
 
 public class InterpretadorInterativo {
 

@@ -1,5 +1,6 @@
 package br.cin.ufpe.ast;
 
+import br.cin.ufpe.runtime.Escopo;
 import br.cin.ufpe.runtime.IteravelRange;
 
 public class Range extends Expressao {

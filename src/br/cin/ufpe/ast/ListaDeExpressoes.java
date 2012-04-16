@@ -3,6 +3,8 @@ package br.cin.ufpe.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.cin.ufpe.runtime.Escopo;
+
 public class ListaDeExpressoes extends Expressao {
 
 	private List<Expressao> expressoes;

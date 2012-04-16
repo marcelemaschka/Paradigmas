@@ -1,6 +1,7 @@
 package br.cin.ufpe.ast;
 
 import br.cin.ufpe.ast.Retornar.Retorno;
+import br.cin.ufpe.runtime.Escopo;
 
 public abstract class Expressao extends Comando {
 
@@ -10,7 +11,7 @@ public abstract class Expressao extends Comando {
 	
 	@Override
 	public void executar(Escopo escopo) throws Retorno {
-		// variavel auxiliar para armazenar o valor da último comando/expressao
+		// variavel auxiliar para armazenar o valor da ï¿½ltimo comando/expressao
 		// no interpretador interativo
 		escopo.put("*_", valor(escopo)); 	
 	}

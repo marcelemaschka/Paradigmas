@@ -3,7 +3,6 @@ package br.cin.ufpe.runtime;
 import java.util.List;
 
 import br.cin.ufpe.ast.Bloco;
-import br.cin.ufpe.ast.Escopo;
 import br.cin.ufpe.ast.Retornar.Retorno;
 
 public class Closure {
@@ -21,8 +20,8 @@ public class Closure {
 		int len = args.size();
 		if (len != parametros.size())
 			throw new IllegalArgumentException(
-					"Fun��o chamada com n�mero de argumentos diferente da declara��o.");
-		// o primeiro passo � atribuir os valores dos argumentos
+					"Função chamada com número de argumentos diferente da declaração.");
+		// o primeiro passo é atribuir os valores dos argumentos
 		// a seus respectivos identificadores
 		Escopo escopo = new Escopo(superEscopo);
 		for (int i = 0; i < len; i++)
@@ -35,7 +34,6 @@ public class Closure {
 		}
 		return valorRetorno;
 	}
-
 
 	@Override
 	public String toString() {

@@ -11,9 +11,10 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.junit.Test;
 
-import br.cin.ufpe.ast.Escopo;
 import br.cin.ufpe.ast.Programa;
 import br.cin.ufpe.ast.Retornar.Retorno;
+import br.cin.ufpe.runtime.Escopo;
+import br.cin.ufpe.runtime.funcoes.Util;
 
 public class TestComandos {
 
@@ -21,6 +22,7 @@ public class TestComandos {
 
 	public void executar(String codigo) throws RecognitionException, Retorno {
 		escopo = new Escopo();
+		Util.embutirFuncoes(escopo);
 		ANTLRStringStream cod = new ANTLRStringStream(codigo);
 		PortujavaLexer lexer = new PortujavaLexer(cod);
 		PortujavaParser parser = new PortujavaParser(new CommonTokenStream(
@@ -63,7 +65,7 @@ public class TestComandos {
 
 	@Test
 	public void para() throws RecognitionException, Retorno {
-		executar("fatorial=1;para x em <10->1> {fatorial=fatorial*x;}");
+		executar("fatorial=1;para x em :10=>1: {fatorial=fatorial*x;}");
 		assertEquals(3628800.0, escopo.get("fatorial"));
 	}
 
@@ -72,7 +74,7 @@ public class TestComandos {
 		PrintStream out = System.out;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(baos));
-		executar("escreva 'O valor de x é '+10*5;");
+		executar("escrevaln('O valor de x é '+10*5);");
 		baos.flush();
 		baos.close();
 		String str = new String(baos.toByteArray());

@@ -1,6 +1,8 @@
-package br.cin.ufpe.ast;
+package br.cin.ufpe.runtime;
 
 import java.util.HashMap;
+
+import br.cin.ufpe.runtime.funcoes.FuncaoEmbutida;
 
 @SuppressWarnings("serial")
 public class Escopo extends HashMap<String, Object> {
@@ -15,6 +17,10 @@ public class Escopo extends HashMap<String, Object> {
 		this.superEscopo = superEscopo;
 	}
 
+	public void embutirFuncao(FuncaoEmbutida func) {
+		this.put(func.getNome(), func);
+	}
+
 	@Override
 	public Object get(Object key) {
 		if (containsKey(key))
@@ -26,11 +32,10 @@ public class Escopo extends HashMap<String, Object> {
 
 	@Override
 	public Object put(String key, Object value) {
-		if(superEscopo!=null&&superEscopo.get(key)!=null){
+		if (superEscopo != null && superEscopo.get(key) != null) {
 			return superEscopo.put(key, value);
 		}
 		return super.put(key, value);
 	}
-	
-	
+
 }
