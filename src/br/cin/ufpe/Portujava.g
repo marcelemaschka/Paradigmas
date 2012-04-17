@@ -362,7 +362,7 @@ multiplicacao returns [Expressao rv]
 
 expressao_primaria returns [Expressao rv]
   // regra que serve para identificar as expressoes de maior precedencia na linguagem
-  // por enquanto somente átomos e chamadas de funcao estão nesta categoria, futuramente
+  // por enquanto somente Atomos e chamadas de funcao estão nesta categoria, futuramente
   // pode ser usada para outras operaçoes, tipo accessar o atributos de uma instancia
   :
   atomo 
@@ -461,7 +461,7 @@ intervalo returns [Expressao rv]
   :
   (inicio=inteiro A fim=inteiro (',' passo=inteiro)?) 
                                                         {
-                                                         $rv = new Range($inicio.rv, $fim.rv, $passo.rv);
+                                                         $rv = new Intervalo($inicio.rv, $fim.rv, $passo.rv);
                                                         }
   ;
 
