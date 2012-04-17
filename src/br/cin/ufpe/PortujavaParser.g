@@ -331,21 +331,47 @@ soma returns [Expressao rv]
 
 multiplicacao returns [Expressao rv]
   :
-  (esq=expressao_primaria 
-                          {
-                           $rv = $esq.rv;
-                          })
+  (esq=expressao_unaria 
+                        {
+                         $rv = $esq.rv;
+                        })
   (
     op=
     (
       MULT
       | DIV
     )
-    dir=expressao_primaria 
-                           {
-                            $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
-                           }
+    dir=expressao_unaria 
+                         {
+                          $rv = new ExpressaoBinaria($rv, $dir.rv, $op.text);
+                         }
   )*
+  ;
+
+expressao_unaria returns [Expressao rv]
+@init {
+  boolean operadorUnario = false;
+}
+  :
+  (
+    (
+      op=
+      (
+        AD
+        | SUB
+        | EXCL
+      )
+      { operadorUnario = true; } 
+    )?    
+    exp=expressao_primaria 
+                           {
+                            if(operadorUnario) {
+                              $rv = new ExpressaoUnaria($op.text, $exp.rv);
+                            } else {
+                              $rv = $exp.rv;
+                            }
+                           }
+  )
   ;
 
 expressao_primaria returns [Expressao rv]
@@ -383,10 +409,6 @@ atomo returns [Expressao rv]
                                   {
                                    $rv = $expressao_entre_parentesis.rv;
                                   })
-    | (expressao_unaria 
-                        {
-                         $rv = $expressao_unaria.rv;
-                        })
     | (valor 
              {
               $rv = $valor.rv;
@@ -431,7 +453,7 @@ lista_de_expressoes returns [Expressao rv]
 @init {
 ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
 }
-// TODO: Corrigir esse warning
+  // TODO: Corrigir esse warning
   :
   (exp1=expressao 
                   {
@@ -460,22 +482,6 @@ expressao_entre_parentesis returns [Expressao rv]
                                   {
                                    $rv = $exp.rv;
                                   }
-  ;
-
-expressao_unaria returns [Expressao rv]
-  :
-  (
-    op=
-    (
-      AD
-      | SUB
-      | EXCL
-    )
-    exp=atomo 
-              {
-               $rv = new ExpressaoUnaria($op.text, $exp.rv);
-              }
-  )
   ;
 
 valor returns [Expressao rv]
