@@ -43,13 +43,13 @@ bloco returns [Bloco rv]
 ArrayList<Comando> comandos = new ArrayList<Comando>();
 }
   :
-  ECHAVE (comando 
-                  {
-                   comandos.add($comando.rv);
-                  })* DCHAVE 
-                             {
-                              rv = new Bloco(comandos);
-                             }
+  (ECHAVE (cmd=comando 
+                       {
+                        comandos.add($cmd.rv);
+                       })* DCHAVE 
+                                  {
+                                   rv = new Bloco(comandos);
+                                  })
   ;
 
 comando returns [Comando rv]
@@ -350,7 +350,7 @@ multiplicacao returns [Expressao rv]
 
 expressao_unaria returns [Expressao rv]
 @init {
-  boolean operadorUnario = false;
+boolean operadorUnario = false;
 }
   :
   (
@@ -361,14 +361,17 @@ expressao_unaria returns [Expressao rv]
         | SUB
         | EXCL
       )
-      { operadorUnario = true; } 
-    )?    
+      
+       {
+        operadorUnario = true;
+       }
+    )?
     exp=expressao_primaria 
                            {
-                            if(operadorUnario) {
-                              $rv = new ExpressaoUnaria($op.text, $exp.rv);
+                            if (operadorUnario) {
+                            	$rv = new ExpressaoUnaria($op.text, $exp.rv);
                             } else {
-                              $rv = $exp.rv;
+                            	$rv = $exp.rv;
                             }
                            }
   )
@@ -487,10 +490,10 @@ expressao_entre_parentesis returns [Expressao rv]
 valor returns [Expressao rv]
   :
   (
-    exp=inteiro
+    exp=booleano
     | exp=decimal
+    | exp=inteiro
     | exp=texto
-    | exp=booleano
   )
   
    {
