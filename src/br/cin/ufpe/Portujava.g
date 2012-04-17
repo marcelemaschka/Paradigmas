@@ -5,6 +5,7 @@ options {
   backtrack = true;
 }
 
+
 @header {
 package br.cin.ufpe;
   
@@ -461,7 +462,7 @@ intervalo returns [Expressao rv]
   :
   (inicio=inteiro A fim=inteiro (',' passo=inteiro)?) 
                                                         {
-                                                         $rv = new Range($inicio.rv, $fim.rv, $passo.rv);
+                                                         $rv = new Intervalo($inicio.rv, $fim.rv, $passo.rv);
                                                         }
   ;
 
