@@ -13,6 +13,7 @@ import br.cin.ufpe.PortujavaParser;
 import br.cin.ufpe.ast.Programa;
 import br.cin.ufpe.ast.Retornar.Retorno;
 import br.cin.ufpe.runtime.Escopo;
+import br.cin.ufpe.runtime.funcoes.Util;
 
 public class InterpretadorInterativo {
 
@@ -22,6 +23,7 @@ public class InterpretadorInterativo {
 		System.out.println("Digite um comando ou express�o:");
 		System.out.print(">>>");
 		Escopo escopo = new Escopo();
+		Util.embutirFuncoes(escopo);
 		Scanner scanner = new Scanner(System.in);
 
 		while (true) {
