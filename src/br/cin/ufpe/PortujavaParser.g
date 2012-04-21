@@ -38,25 +38,11 @@ ArrayList<Comando> comandos = new ArrayList<Comando>();
                }
   ;
 
-bloco returns [Bloco rv]
-@init {
-ArrayList<Comando> comandos = new ArrayList<Comando>();
-}
-  :
-  (ECHAVE (cmd=comando 
-                       {
-                        comandos.add($cmd.rv);
-                       })* DCHAVE 
-                                  {
-                                   rv = new Bloco(comandos);
-                                  })
-  ;
-
 comando returns [Comando rv]
   :
   (
-    cmd=comando_pontoVirgula
-    | cmd=comando_fluxo
+    cmd=comando_ponto_virgula
+    | cmd=comando_bloco
   )
   
    {
@@ -64,28 +50,20 @@ comando returns [Comando rv]
    }
   ;
 
-comando_pontoVirgula returns [Comando rv]
-  :
-  (cmd=comando_execucao PVIRG) 
-                               {
-                                $rv = $cmd.rv;
-                               }
-  ;
-
-comando_execucao returns [Comando rv]
+comando_ponto_virgula returns [Comando rv]
   :
   (
     cmd=retornar
     | cmd=atribuicao
     | cmd=comando_expressao
   )
-  
-   {
-    $rv = $cmd.rv;
-   }
+  PVIRG 
+        {
+         $rv = $cmd.rv;
+        }
   ;
 
-comando_fluxo returns [Comando rv]
+comando_bloco returns [Comando rv]
   :
   (
     cmd=declaracao_de_funcao
@@ -99,20 +77,28 @@ comando_fluxo returns [Comando rv]
    }
   ;
 
-comando_expressao returns [Comando rv]
-  :
-  (expressao) 
-              {
-               $rv = $expressao.rv;
-              }
-  ;
-
 retornar returns [Comando rv]
   :
   RETORNAR (exp=expressao)? 
                             {
                              $rv = new Retornar($exp.rv);
                             }
+  ;
+
+atribuicao returns [Atribuicao rv]
+  :
+  (identificador ATRIB expressao) 
+                                  {
+                                   $rv = new Atribuicao($identificador.rv, $expressao.rv);
+                                  }
+  ;
+
+comando_expressao returns [Comando rv]
+  :
+  (expressao) 
+              {
+               $rv = $expressao.rv;
+              }
   ;
 
 declaracao_de_funcao returns [Comando rv]
@@ -131,14 +117,6 @@ ArrayList<String> parametros = new ArrayList<String>();
                                                {
                                                 $rv = new DeclaracaoDeFuncao($nome.rv, parametros, $bloco.rv);
                                                }
-  ;
-
-atribuicao returns [Atribuicao rv]
-  :
-  (identificador ATRIB expressao) 
-                                  {
-                                   $rv = new Atribuicao($identificador.rv, $expressao.rv);
-                                  }
   ;
 
 se returns [Comando rv]
@@ -166,6 +144,20 @@ para returns [Comando rv]
                                                     {
                                                      $rv = new Para($id.rv, $exp.rv, $bl.rv);
                                                     }
+  ;
+
+bloco returns [Bloco rv]
+@init {
+ArrayList<Comando> comandos = new ArrayList<Comando>();
+}
+  :
+  (ECHAVE (cmd=comando 
+                       {
+                        comandos.add($cmd.rv);
+                       })* DCHAVE 
+                                  {
+                                   rv = new Bloco(comandos);
+                                  })
   ;
 
 // Para facilitar a leitura, definimos as expressoes em ordem inversa de precedencia
