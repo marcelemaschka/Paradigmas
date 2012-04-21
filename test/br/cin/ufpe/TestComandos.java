@@ -45,13 +45,13 @@ public class TestComandos {
 
 	@Test
 	public void se() throws RecognitionException, Retorno {
-		executar("x=10;y=0; se (x<=10) { y=1000; }");
+		executar("x=10;y=0; se x<=10 { y=1000; }");
 		assertEquals(1000L, escopo.get("y"));
 	}
 
 	@Test
 	public void senao() throws RecognitionException, Retorno {
-		executar("x=1;y=2; se (falso) { y=3; } senao { x = 4; }");
+		executar("x=1;y=2; se falso { y=3; } senao { x = 4; }");
 		assertEquals(2L, escopo.get("y"));
 		assertEquals(4L, escopo.get("x"));
 
@@ -59,13 +59,13 @@ public class TestComandos {
 
 	@Test
 	public void enquanto() throws RecognitionException, Retorno {
-		executar("x=0; enquanto (x<100) { x=x+1; }");
+		executar("x=0; enquanto x<100 { x=x+1; }");
 		assertEquals(100.0, escopo.get("x"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void escopo() throws RecognitionException, Retorno {
-		executar("x=0;se(x==0){y=2;}x=y+2;");
+		executar("x=0;se x==0 {y=2;}x=y+2;");
 		assertEquals(false, (Double) (escopo.get("x")) == 4);
 	}
 

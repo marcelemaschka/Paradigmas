@@ -122,7 +122,7 @@ ArrayList<String> parametros = new ArrayList<String>();
 se returns [Comando rv]
   :
   (
-    SE (exp=expressao_entre_parentesis bloco1=bloco) (SENAO bloco2=bloco)?
+    SE (exp=expressao bloco1=bloco) (SENAO bloco2=bloco)?
   )
   
    {
@@ -132,7 +132,7 @@ se returns [Comando rv]
 
 enquanto returns [Comando rv]
   :
-  (ENQUANTO exp=expressao_entre_parentesis bloco) 
+  (ENQUANTO exp=expressao bloco) 
                                                   {
                                                    $rv = new Enquanto($exp.rv, $bloco.rv);
                                                   }
