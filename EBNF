@@ -1,0 +1,37 @@
+BNF PortuJava
+
+
+Programa ::= Comando*
+Comando ::= ComandoPontoVirgula | ComandoBloco
+ComandoPontoVirgula ::= Retornar | Atribuicao | ComandoExpressao “;”
+ComandoBloco ::= DeclaracaoDeFuncao | Se | Enquanto | Para
+Retornar ::= “retornar” (Expressao)?
+Atribuicao ::= (Identificador) “=” (Expressao)
+ComandoExpressao ::= (Expressao)
+DeclaracaoDeFuncao ::= “funcao” Identificador “(“ (Identificador (“,” Identificador)*)? “)” Bloco 
+Se ::= “se” Expressao Bloco
+Enquanto ::= “enquanto” Expressao Bloco
+Para ::= “para” Identificador “em” Expressao Bloco
+Bloco ::= “{“ Comando “}”
+Expressao ::= Funcao |  ExpressaoBinaria
+Funcao ::= “funcao” “(“ (Identificador (“,” Identificador)*)? “)” Bloco 
+ExpressaoBinaria ::= Disjuncao
+Disjuncao ::= Conjuncao (“||” Conjuncao)*
+Conjuncao ::= ComparacaoIgualdade (“&&” ComparacaoIgualdade)*
+Bitwise_ou ::= Bitwise_e (“|” Bitwise_e)*
+Bitwise_e ::= ComparacaoIgualdade (“&” ComparacaoIgualdade)*
+ComparacaoIgualdade ::= ComparacaoMaiorMenor ((“!=” | “==”) ComparacaoMaiorMenor)*
+ComparacaoMaiorMenor ::= Bitwesi_Shift ((“>=” | “>” | “<=” | “<”) Bitwesi_Shift)?
+Bitwise_Shift ::= Soma ((“<<” | “>>”) Soma)*
+Soma ::= Multiplicacao ((“+” | “-”) Multiplicacao)*
+Multiplicacao ::= ExpressaoUnaria ((“*” | “/”) ExpressaoUnaria)*
+ExpressaoUnaria ::= (“+” | “-” | “!”)? ExpressaoPrimaria
+ExpressaoPrimaria ::= Atomo (“(“ ListaDeExpressoes “)”)*
+Atomo ::= Lista | ExpressaoGeradora | ExpressaoEntreParentesis | Valor | Identificador
+Lista ::= “[“ Gerador “]”
+ExpressaoGeradora ::= “:” Gerador “:”
+Gerador ::= (ListaDeExpressoes | Intervalo)
+ListaDeExpressoes ::= (Expressao (“;” Expressao)*)?
+Intervalo ::= INTEIRO “a” INTEIRO (“,”)?
+ExpressaoEntreParentesis ::= “(“ ExpressaoBinaria “)”
+Valor ::=  BOOLEANO | DECIMALl | INTEIRO | TEXTO
