@@ -149,7 +149,7 @@ public class TestExpressoes {
 	@Test
 	public void comparacaoMalFormada() throws RecognitionException, Retorno {
 		try {
-			executar("x=0;se(3>2>1){x=1;}");
+			executar("x=0;se 3>2>1 {x=1;}");
 			fail("Esperando erro de sintaxe");
 		} catch (RuntimeException e) {
 			assertTrue(e.getCause() instanceof MismatchedTokenException);
@@ -158,7 +158,7 @@ public class TestExpressoes {
 
 	@Test
 	public void comparacaoECondicional() throws RecognitionException, Retorno {
-		executar("x=0;se(0==x==verdadeiro){x=1;}");
+		executar("x=0;se 0==x==verdadeiro {x=1;}");
 		assertEquals(1L, escopo.get("x"));
 	}
 
