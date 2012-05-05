@@ -9,27 +9,28 @@ public class ExpressaoUnaria extends Expressao {
 
 	public ExpressaoUnaria(String operador, Expressao operando) {
 		this.operador = operador;
-		this.operando = operando;		
+		this.operando = operando;
 	}
 
 	@Override
 	public Object valor(Escopo escopo) {
 		if (operador.equals("-")) {
 			Number operando = (Number) this.operando.valor(escopo);
-			return -operando.doubleValue();
-		} else if (operador.equals("!")){
+			if (operando instanceof Double)
+				return -operando.doubleValue();
+			return -operando.longValue();
+		} else if (operador.equals("!")) {
 			Boolean operando = (Boolean) this.operando.valor(escopo);
 			return !operando;
 		}
-			
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String valorTexto(Escopo escopo) {
-		Object valor=valor(escopo);
-		if(valor instanceof Boolean){
-			return (Boolean) valor?"verdadeiro":"falso";
+		Object valor = valor(escopo);
+		if (valor instanceof Boolean) {
+			return (Boolean) valor ? "verdadeiro" : "falso";
 		}
 		return valor.toString();
 	}

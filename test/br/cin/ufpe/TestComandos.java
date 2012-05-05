@@ -75,6 +75,13 @@ public class TestComandos {
 	}
 
 	@Test
+	public void paraIntervaloComVariaveis() throws RecognitionException,
+			Retorno {
+		executar("inicio=3;fim=-2;pulo=2;soma=0;para x em :inicio a fim,pulo: {soma=soma+x;}");
+		assertEquals(1.0, escopo.get("soma"));
+	}
+
+	@Test
 	public void escreva() throws RecognitionException, Retorno, IOException {
 		PrintStream out = System.out;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

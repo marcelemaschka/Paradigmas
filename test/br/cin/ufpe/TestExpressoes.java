@@ -48,8 +48,8 @@ public class TestExpressoes {
 
 	@Test
 	public void numeroNegativo() throws RecognitionException {
-		assertEquals(-5.0, calcular("-5"));
-		assertEquals(5.0, calcular("-(-5)"));
+		assertEquals(-5l, calcular("-5"));
+		assertEquals(5l, calcular("-(-5)"));
 	}
 
 	@Test

@@ -450,8 +450,9 @@ expressao_geradora returns [Expressao rv]
 gerador returns [Expressao rv]
   :
   (
-    exp=lista_de_expressoes
-    | exp=intervalo
+    (expressao A) => exp=intervalo
+  | exp=lista_de_expressoes
+   
   )
   
   {
@@ -478,8 +479,8 @@ ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
   ;
 
 intervalo returns [Expressao rv]
-  :
-  (inicio=inteiro A fim=inteiro (VIRG passo=inteiro)?) 
+  :  
+  inicio=expressao A fim=expressao (VIRG passo=expressao)? 
                                                       {
                                                        $rv = new Intervalo($inicio.rv, $fim.rv, $passo.rv);
                                                       }
