@@ -120,14 +120,19 @@ ArrayList<String> parametros = new ArrayList<String>();
   ;
 
 se returns [Comando rv]
+@init {
+  Se se = null;
+  Se senaose = null;
+}
   :
   (
-    SE (exp=expressao bloco1=bloco) (SENAO bloco2=bloco)?
-  )
-  
-  {
-   $rv = new Se($exp.rv, $bloco1.rv, $bloco2.rv);
-  }
+    (SE exp1=expressao b1=bloco 
+    {se = new Se($exp1.rv, $b1.rv); $rv=se;})
+    (SENAO SE expn=expressao bn=bloco 
+    {senaose = new Se($expn.rv, $bn.rv);se.setBloco2(new Bloco(senaose));se = senaose;})*
+    (SENAO bl=bloco 
+    {se.setBloco2($bl.rv);})?
+  )  
   ;
 
 enquanto returns [Comando rv]
