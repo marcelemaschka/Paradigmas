@@ -5,7 +5,8 @@ import java.util.List;
 import br.cin.ufpe.ast.Bloco;
 import br.cin.ufpe.ast.Retornar.Retorno;
 
-public class Closure {
+public class Closure extends Funcao {
+	public static final String VINCULO_KEY = "isto";
 	private Escopo superEscopo;
 	private List<String> parametros;
 	private Bloco bloco;
@@ -16,6 +17,7 @@ public class Closure {
 		this.bloco = bloco;
 	}
 
+	@Override
 	public Object chamar(List<Object> args) {
 		int len = args.size();
 		if (len != parametros.size())
@@ -35,8 +37,4 @@ public class Closure {
 		return valorRetorno;
 	}
 
-	@Override
-	public String toString() {
-		return "<<Função>>";
-	}
 }

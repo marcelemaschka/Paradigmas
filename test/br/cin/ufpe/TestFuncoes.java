@@ -39,13 +39,13 @@ public class TestFuncoes {
 	@Test
 	public void declaracaoEChamada() throws RecognitionException, Retorno {
 		executar("funcao f(x) { retornar x + 5; } y = f(10);");
-		assertEquals(15.0, escopo.get("y"));		
+		assertEquals(15l, escopo.get("y"));		
 	}
 	
 
 	@Test
 	public void funcaoRecursiva() throws RecognitionException, Retorno {
 		executar("funcao fatorial(n) { se n == 1 { retornar 1; } retornar n * fatorial(n-1); } y = fatorial(5);");
-		assertEquals(120.0, escopo.get("y"));		
+		assertEquals(120l, escopo.get("y"));		
 	}
 }

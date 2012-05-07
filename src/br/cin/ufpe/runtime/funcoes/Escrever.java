@@ -15,7 +15,6 @@ public class Escrever extends FuncaoEmbutida {
 
 	public Escrever(OutputStream saidaPadrao, OutputStream erroPadrao,
 			Escopo escopo) {
-		super(escopo);
 		this.saidaPadrao = saidaPadrao;
 		this.erroPadrao = erroPadrao;
 	}

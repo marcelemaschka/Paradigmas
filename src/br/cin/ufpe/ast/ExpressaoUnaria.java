@@ -26,13 +26,4 @@ public class ExpressaoUnaria extends Expressao {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public String valorTexto(Escopo escopo) {
-		Object valor = valor(escopo);
-		if (valor instanceof Boolean) {
-			return (Boolean) valor ? "verdadeiro" : "falso";
-		}
-		return valor.toString();
-	}
-
 }

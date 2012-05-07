@@ -25,8 +25,12 @@ public class Escopo extends HashMap<String, Object> {
 	public Object get(Object key) {
 		if (containsKey(key))
 			return super.get(key);
-		else if (superEscopo != null)
+		else if (superEscopo != null) {
+			if (key.equals(Closure.VINCULO_KEY))
+				throw new IllegalStateException(
+						"Esta função não está vinculada a um objeto");
 			return superEscopo.get(key);
+		}
 		return null;
 	}
 

@@ -40,7 +40,7 @@ public class TestComandos {
 	@Test
 	public void atribuicao() throws RecognitionException, Retorno {
 		executar("x = 5 + 3 * 10;");
-		assertEquals(35.0, escopo.get("x"));
+		assertEquals(35l, escopo.get("x"));
 	}
 
 	@Test
@@ -65,20 +65,20 @@ public class TestComandos {
 	@Test
 	public void enquanto() throws RecognitionException, Retorno {
 		executar("x=0; enquanto x<100 { x=x+1; }");
-		assertEquals(100.0, escopo.get("x"));
+		assertEquals(100l, escopo.get("x"));
 	}
 
 	@Test
 	public void para() throws RecognitionException, Retorno {
 		executar("fatorial=1;para x em :10 a 1: {fatorial=fatorial*x;}");
-		assertEquals(3628800.0, escopo.get("fatorial"));
+		assertEquals(3628800l, escopo.get("fatorial"));
 	}
 
 	@Test
 	public void paraIntervaloComVariaveis() throws RecognitionException,
 			Retorno {
 		executar("inicio=3;fim=-2;pulo=2;soma=0;para x em :inicio a fim,pulo: {soma=soma+x;}");
-		assertEquals(1.0, escopo.get("soma"));
+		assertEquals(1l, escopo.get("soma"));
 	}
 
 	@Test
@@ -90,8 +90,7 @@ public class TestComandos {
 		baos.flush();
 		baos.close();
 		String str = new String(baos.toByteArray());
-		assertEquals(true, "O valor de x é 50.0\n".equals(str));
+		assertEquals(true, "O valor de x é 50\n".equals(str));
 		System.setOut(out);
 	}
-
 }

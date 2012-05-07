@@ -35,11 +35,4 @@ public class Intervalo extends Expressao {
 		}
 		return new IteradorDeIntervalo((Long) inicio, (Long) fim, passo);
 	}
-
-	@Override
-	public String valorTexto(Escopo escopo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

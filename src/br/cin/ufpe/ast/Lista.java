@@ -17,11 +17,4 @@ public class Lista extends Expressao {
 				.valor(escopo);
 		return new br.cin.ufpe.runtime.Lista(exprIteravel);
 	}
-
-	@Override
-	public String valorTexto(Escopo escopo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
