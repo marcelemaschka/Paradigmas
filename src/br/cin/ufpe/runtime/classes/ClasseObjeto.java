@@ -2,8 +2,9 @@ package br.cin.ufpe.runtime.classes;
 
 import java.util.List;
 
-import br.cin.ufpe.runtime.Chamada;
+import br.cin.ufpe.runtime.Acesso;
 import br.cin.ufpe.runtime.Funcao;
+import br.cin.ufpe.runtime.Objeto;
 
 @SuppressWarnings("serial")
 public class ClasseObjeto extends ClasseEmbutida {
@@ -18,13 +19,38 @@ public class ClasseObjeto extends ClasseEmbutida {
 				return args.get(0).toString();
 			}
 		});
-		put("==", new Funcao() {
+		put(Acesso.GETTER, new Funcao() {
+			@Override
+			public Object chamar(List<Object> args) {
+				checarNumeroDeArgs(args, 2);
+				Object alvo = args.get(0);
+				Object attr = args.get(1);				
+				Objeto classe = Acesso.getClasse(alvo);
+				Object rv = null;
+				Object cls = classe;
+				while (rv == null && cls instanceof Objeto) {
+					Objeto c = (Objeto) cls;
+					rv = c.get(attr);
+					cls = ((Objeto) cls).get("classe");
+				}
+				return rv;
+			}
+		});
+		put(Acesso.SETTER, new Funcao() {
+			@Override
+			public Object chamar(List<Object> args) {
+				checarNumeroDeArgs(args, 3);
+				((Objeto) args.get(0)).put(args.get(1), args.get(2));
+				return null;
+			}
+		});
+		put("#==#", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {
 				checarNumeroDeArgs(args, 2);
 				Object resultadoComparacao = null;
 				try {
-					resultadoComparacao = Chamada.chamarMetodo("comparar",
+					resultadoComparacao = Acesso.chamarMetodo("comparar",
 							args.get(0), args.get(1));
 				} catch (Exception e) {
 					return args.get(0).equals(args.get(1));
@@ -35,11 +61,11 @@ public class ClasseObjeto extends ClasseEmbutida {
 				return ((Number) resultadoComparacao).doubleValue() == 0;
 			}
 		});
-		put("!=", new Funcao() {
+		put("#!=#", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {
 				checarNumeroDeArgs(args, 2);
-				Object resultadoComparacao = Chamada.chamarMetodo("comparar",
+				Object resultadoComparacao = Acesso.chamarMetodo("comparar",
 						args.get(0), args.get(1));
 				if (!(resultadoComparacao instanceof Number))
 					throw new IllegalStateException(
@@ -47,11 +73,11 @@ public class ClasseObjeto extends ClasseEmbutida {
 				return ((Number) resultadoComparacao).doubleValue() != 0;
 			}
 		});
-		put(">=", new Funcao() {
+		put("#>=#", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {
 				checarNumeroDeArgs(args, 2);
-				Object resultadoComparacao = Chamada.chamarMetodo("comparar",
+				Object resultadoComparacao = Acesso.chamarMetodo("comparar",
 						args.get(0), args.get(1));
 				if (!(resultadoComparacao instanceof Number))
 					throw new IllegalStateException(
@@ -59,11 +85,11 @@ public class ClasseObjeto extends ClasseEmbutida {
 				return ((Number) resultadoComparacao).doubleValue() >= 0;
 			}
 		});
-		put(">", new Funcao() {
+		put("#>#", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {
 				checarNumeroDeArgs(args, 2);
-				Object resultadoComparacao = Chamada.chamarMetodo("comparar",
+				Object resultadoComparacao = Acesso.chamarMetodo("comparar",
 						args.get(0), args.get(1));
 				if (!(resultadoComparacao instanceof Number))
 					throw new IllegalStateException(
@@ -71,11 +97,11 @@ public class ClasseObjeto extends ClasseEmbutida {
 				return ((Number) resultadoComparacao).doubleValue() > 0;
 			}
 		});
-		put("<=", new Funcao() {
+		put("#<=#", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {
 				checarNumeroDeArgs(args, 2);
-				Object resultadoComparacao = Chamada.chamarMetodo("comparar",
+				Object resultadoComparacao = Acesso.chamarMetodo("comparar",
 						args.get(0), args.get(1));
 				if (!(resultadoComparacao instanceof Number))
 					throw new IllegalStateException(
@@ -83,11 +109,11 @@ public class ClasseObjeto extends ClasseEmbutida {
 				return ((Number) resultadoComparacao).doubleValue() <= 0;
 			}
 		});
-		put("<", new Funcao() {
+		put("#<#", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {
 				checarNumeroDeArgs(args, 2);
-				Object resultadoComparacao = Chamada.chamarMetodo("comparar",
+				Object resultadoComparacao = Acesso.chamarMetodo("comparar",
 						args.get(0), args.get(1));
 				if (!(resultadoComparacao instanceof Number))
 					throw new IllegalStateException(

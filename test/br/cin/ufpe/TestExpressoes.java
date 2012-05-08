@@ -16,6 +16,7 @@ import br.cin.ufpe.ast.Expressao;
 import br.cin.ufpe.ast.Programa;
 import br.cin.ufpe.ast.Retornar.Retorno;
 import br.cin.ufpe.runtime.Escopo;
+import br.cin.ufpe.runtime.Objeto;
 
 public class TestExpressoes {
 
@@ -236,5 +237,24 @@ public class TestExpressoes {
 		assertEquals(4L, val.get(3));
 		assertEquals(2L, val.get(4));
 		assertEquals(1L, val.get(5));
+	}
+
+	@Test
+	public void objeto() throws RecognitionException {
+		Objeto val = (Objeto) calcular("{nome: 'Foo', 'tipo': 'Bar'}");
+		assertEquals(val.get("nome"), "Foo");
+		assertEquals(val.get("tipo"), "Bar");
+	}
+
+	@Test
+	public void acessoAttributo() throws RecognitionException {
+		assertEquals("Foo", calcular("{nome: 'Foo', 'tipo': 'Bar'}.nome"));
+	}
+
+	@Test
+	public void acessoAttributoAninhado() throws RecognitionException {
+		assertEquals("232",
+				calcular("{nome: 'Foo', endereco:{contato:{fone: '232'}}}."
+						+ "endereco['contato'].fone"));
 	}
 }

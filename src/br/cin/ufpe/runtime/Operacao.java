@@ -1,9 +1,13 @@
 package br.cin.ufpe.runtime;
 
-public class OperadorBinario {
+public class Operacao {
 
-	public static Object operacaoBinaria(Object esq, Object dir, String operador) {
-		return Chamada.chamarMetodo(operador, esq, dir);
+	public static Object binaria(Object esq, Object dir, String operador) {
+		return Acesso.chamarMetodo("#" + operador + "#", esq, dir);
+	}
+
+	public static Object unaria(Object alvo, String operador) {
+		return Acesso.chamarMetodo(operador + "#", alvo);
 	}
 
 	public static String multiplicacaoString(String s, long n) {

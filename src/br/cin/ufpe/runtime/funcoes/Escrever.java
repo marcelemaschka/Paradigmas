@@ -26,14 +26,14 @@ public class Escrever extends FuncaoEmbutida {
 
 	@Override
 	public Object chamar(List<Object> args) {
-		if (args.size() < 1)
+		if (args.size() < 2)
 			throw new IllegalArgumentException(
 					"Funcao 'escreva' precisa de pelo menos um argumento");
-		String txt = args.get(0).toString();
+		String txt = args.get(1).toString();
 
 		OutputStream s = saidaPadrao;
-		if (args.size() > 1) {
-			Object saida = args.get(1);
+		if (args.size() > 2) {
+			Object saida = args.get(2);
 			if (saida instanceof Long && saida.equals(2L))
 				s = erroPadrao;
 			else

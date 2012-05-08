@@ -19,15 +19,17 @@ public class Closure extends Funcao {
 
 	@Override
 	public Object chamar(List<Object> args) {
-		int len = args.size();
-		if (len != parametros.size())
+		int len = parametros.size();
+		if (len + 1 != args.size())
 			throw new IllegalArgumentException(
 					"Função chamada com número de argumentos diferente da declaração.");
 		// o primeiro passo é atribuir os valores dos argumentos
 		// a seus respectivos identificadores
 		Escopo escopo = new Escopo(superEscopo);
 		for (int i = 0; i < len; i++)
-			escopo.put(parametros.get(i), args.get(i));
+			escopo.put(parametros.get(i), args.get(i + 1));
+		if (args.get(0) != null)
+			escopo.put(VINCULO_KEY, args.get(0));
 		Object valorRetorno = null;
 		try {
 			bloco.executar(escopo);

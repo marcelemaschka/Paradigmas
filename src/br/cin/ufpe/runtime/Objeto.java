@@ -2,7 +2,11 @@ package br.cin.ufpe.runtime;
 
 import java.util.HashMap;
 
+import br.cin.ufpe.runtime.classes.ClasseObjeto;
+
 @SuppressWarnings("serial")
-public class Objeto extends HashMap<String, Object> {
-	
+public class Objeto extends HashMap<Object, Object> {
+	public Objeto() {
+		put("classe", ClasseObjeto.instancia);
+	}
 }

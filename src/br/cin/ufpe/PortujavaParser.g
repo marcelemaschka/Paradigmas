@@ -53,8 +53,8 @@ comando returns [Comando rv]
 comando_ponto_virgula returns [Comando rv]
   :
   (
-    cmd=retornar
-    | cmd=atribuicao
+    (expressao ATRIB) => cmd=atribuicao
+    | cmd=retornar
     | cmd=comando_expressao
   )
   PVIRG 
@@ -87,10 +87,10 @@ retornar returns [Comando rv]
 
 atribuicao returns [Atribuicao rv]
   :
-  (identificador ATRIB expressao) 
-                                 {
-                                  $rv = new Atribuicao($identificador.rv, $expressao.rv);
-                                 }
+  (lhs=expressao ATRIB exp=expressao) 
+                                     {
+                                      $rv = new Atribuicao($lhs.rv, $exp.rv);
+                                     }
   ;
 
 comando_expressao returns [Comando rv]
@@ -121,18 +121,25 @@ ArrayList<String> parametros = new ArrayList<String>();
 
 se returns [Comando rv]
 @init {
-  Se se = null;
-  Se senaose = null;
+Se se = null;
+Se senaose = null;
 }
   :
   (
     (SE exp1=expressao b1=bloco 
-    {se = new Se($exp1.rv, $b1.rv); $rv=se;})
-    (SENAO SE expn=expressao bn=bloco 
-    {senaose = new Se($expn.rv, $bn.rv);se.setBloco2(new Bloco(senaose));se = senaose;})*
-    (SENAO bl=bloco 
-    {se.setBloco2($bl.rv);})?
-  )  
+                               {
+                                se = new Se($exp1.rv, $b1.rv);
+                                $rv = se;
+                               }) (SENAO SE expn=expressao bn=bloco 
+                                                                   {
+                                                                    senaose = new Se($expn.rv, $bn.rv);
+                                                                    se.setBloco2(new Bloco(senaose));
+                                                                    se = senaose;
+                                                                   })* (SENAO bl=bloco 
+                                                                                      {
+                                                                                       se.setBloco2($bl.rv);
+                                                                                      })?
+  )
   ;
 
 enquanto returns [Comando rv]
@@ -386,7 +393,8 @@ ArrayList<Expressao> args = new ArrayList<Expressao>();
        {
         $rv = $atomo.rv;
        }
-  ( (EPAR (exp1=expressao 
+  (
+    (EPAR (exp1=expressao 
                          {
                           args.add($exp1.rv);
                          }
@@ -396,7 +404,16 @@ ArrayList<Expressao> args = new ArrayList<Expressao>();
                             })*)? DPAR 
                                       {
                                        $rv = new ChamadaDeFuncao($rv, args);
-                                      }))*
+                                      })
+    | (PONTO id=identificador 
+                             {
+                              $rv = new AcessoAtributo($rv, $id.rv);
+                             })
+    | (ECOL id=expressao DCOL 
+                             {
+                              $rv = new AcessoAtributo($rv, $id.rv);
+                             })
+  )*
   ;
 
 atomo returns [Expressao rv]
@@ -407,10 +424,14 @@ atomo returns [Expressao rv]
   // o antlr nao aceita isso
   :
   (
-    (lista 
-          {
-           $rv = $lista.rv;
-          })
+    (objeto 
+           {
+            $rv = $objeto.rv;
+           })
+    | (lista 
+            {
+             $rv = $lista.rv;
+            })
     | (expressao_geradora 
                          {
                           $rv = $expressao_geradora.rv;
@@ -430,12 +451,47 @@ atomo returns [Expressao rv]
   )
   ;
 
+objeto returns [Expressao rv]
+@init {
+Objeto o = new Objeto();
+}
+  :
+  ECHAVE
+  (
+    (
+      (
+        k1=identificador
+        | k1=texto
+      )
+      DPONT v1=expressao 
+                        {
+                         o.add($k1.rv.toString(), $v1.rv);
+                        }
+    )
+    (
+      VIRG
+      (
+        kn=identificador
+        | kn=texto
+      )
+      DPONT vn=expressao 
+                        {
+                         o.add($kn.rv.toString(), $vn.rv);
+                        }
+    )*
+  )?
+  DCHAVE 
+        {
+         $rv = o;
+        }
+  ;
+
 lista returns [Expressao rv]
   :
   ECOL exp=gerador DCOL 
-                                  {
-                                   $rv = new Lista($exp.rv);
-                                  }
+                       {
+                        $rv = new Lista($exp.rv);
+                       }
   ;
 
 expressao_geradora returns [Expressao rv]
@@ -451,8 +507,7 @@ gerador returns [Expressao rv]
   :
   (
     (expressao A) => exp=intervalo
-  | exp=lista_de_expressoes
-   
+    | exp=lista_de_expressoes
   )
   
   {
@@ -463,7 +518,7 @@ gerador returns [Expressao rv]
 lista_de_expressoes returns [Expressao rv]
 @init {
 ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
-}  
+}
   :
   exp1=expressao 
                 {
@@ -479,11 +534,11 @@ ArrayList<Expressao> expressoes = new ArrayList<Expressao>();
   ;
 
 intervalo returns [Expressao rv]
-  :  
+  :
   inicio=expressao A fim=expressao (VIRG passo=expressao)? 
-                                                      {
-                                                       $rv = new Intervalo($inicio.rv, $fim.rv, $passo.rv);
-                                                      }
+                                                          {
+                                                           $rv = new Intervalo($inicio.rv, $fim.rv, $passo.rv);
+                                                          }
   ;
 
 expressao_entre_parentesis returns [Expressao rv]
@@ -509,14 +564,18 @@ valor returns [Expressao rv]
   ;
 
 identificador returns [Identificador rv]
+@init {
+  int nivelEscopo = 0;
+}
   :
   (
+   (ESCOPO {nivelEscopo++;})*
     t=IDENTIFICADOR
     | t=A
   )
   
   {
-   $rv = new Identificador($t.text);
+   $rv = new Identificador($t.text, nivelEscopo);
   }
   ;
 

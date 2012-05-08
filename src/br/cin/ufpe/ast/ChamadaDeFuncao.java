@@ -17,14 +17,16 @@ public class ChamadaDeFuncao extends Expressao {
 
 	@Override
 	public Object valor(Escopo escopo) {
+		Object func = expressao.valor(escopo);
 		Object alvo = null;
-		if (expressao instanceof Identificador)
-			alvo = ((Identificador) expressao).valor(escopo);
-		if (!(alvo instanceof br.cin.ufpe.runtime.Funcao))
+		if (expressao instanceof AcessoAtributo)
+			alvo = ((AcessoAtributo) expressao).getAlvo().valor(escopo);
+		if (!(func instanceof br.cin.ufpe.runtime.Funcao))
 			throw new UnsupportedOperationException(
 					"Só é possível chamar funções");
-		br.cin.ufpe.runtime.Funcao f = (br.cin.ufpe.runtime.Funcao) alvo;
+		br.cin.ufpe.runtime.Funcao f = (br.cin.ufpe.runtime.Funcao) func;
 		ArrayList<Object> args = new ArrayList<Object>();
+		args.add(alvo);
 		for (Expressao exp : this.args)
 			args.add(exp.valor(escopo));
 		return f.chamar(args);

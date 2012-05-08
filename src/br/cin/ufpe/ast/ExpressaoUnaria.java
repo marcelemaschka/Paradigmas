@@ -1,6 +1,7 @@
 package br.cin.ufpe.ast;
 
 import br.cin.ufpe.runtime.Escopo;
+import br.cin.ufpe.runtime.Operacao;
 
 public class ExpressaoUnaria extends Expressao {
 
@@ -14,16 +15,8 @@ public class ExpressaoUnaria extends Expressao {
 
 	@Override
 	public Object valor(Escopo escopo) {
-		if (operador.equals("-")) {
-			Number operando = (Number) this.operando.valor(escopo);
-			if (operando instanceof Double)
-				return -operando.doubleValue();
-			return -operando.longValue();
-		} else if (operador.equals("!")) {
-			Boolean operando = (Boolean) this.operando.valor(escopo);
-			return !operando;
-		}
-		throw new UnsupportedOperationException();
+		Object alvo = operando.valor(escopo);
+		return Operacao.unaria(alvo, operador);
 	}
 
 }

@@ -1,7 +1,7 @@
 package br.cin.ufpe.ast;
 
 import br.cin.ufpe.runtime.Escopo;
-import br.cin.ufpe.runtime.OperadorBinario;
+import br.cin.ufpe.runtime.Operacao;
 
 public class ExpressaoBinaria extends Expressao {
 
@@ -20,6 +20,6 @@ public class ExpressaoBinaria extends Expressao {
 	public Object valor(Escopo escopo) {
 		Object esq = esquerda.valor(escopo);
 		Object dir = direita.valor(escopo);
-		return OperadorBinario.operacaoBinaria(esq, dir, operador);
+		return Operacao.binaria(esq, dir, operador);
 	}	
 }

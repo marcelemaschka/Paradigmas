@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.junit.Before;
 import org.junit.Test;
 
 import br.cin.ufpe.ast.Programa;
@@ -19,10 +19,16 @@ import br.cin.ufpe.runtime.funcoes.Util;
 public class TestComandos {
 
 	private Escopo escopo;
+	private ByteArrayOutputStream saida;
+
+	@Before
+	public void setup() {
+		saida = new ByteArrayOutputStream();
+		escopo = new Escopo();
+		Util.embutirFuncoes(escopo, null, saida, saida);
+	}
 
 	public void executar(String codigo) throws RecognitionException, Retorno {
-		escopo = new Escopo();
-		Util.embutirFuncoes(escopo);
 		ANTLRStringStream cod = new ANTLRStringStream(codigo);
 		PortujavaLexer lexer = new PortujavaLexer(cod);
 		PortujavaParser parser = new PortujavaParser(new CommonTokenStream(
@@ -83,14 +89,45 @@ public class TestComandos {
 
 	@Test
 	public void escreva() throws RecognitionException, Retorno, IOException {
-		PrintStream out = System.out;
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(baos));
 		executar("escrevaln('O valor de x é '+10*5);");
-		baos.flush();
-		baos.close();
-		String str = new String(baos.toByteArray());
-		assertEquals(true, "O valor de x é 50\n".equals(str));
-		System.setOut(out);
+		saida.flush();
+		String str = new String(saida.toByteArray());
+		assertEquals("O valor de x é 50\n", str);
+	}
+
+	@Test
+	public void sobrescritaDeOperador() throws RecognitionException, Retorno {
+		executar("foo={nome: 'Foo', '#+#': funcao(operando) {retornar 1000;}}; x = foo+'sds';");
+		assertEquals(1000l, escopo.get("x"));
+	}
+
+	@Test
+	public void atribuicaoAtributo() throws RecognitionException, Retorno {
+		executar("foo={nome: 'Foo', endereco:{Rua: 'X'}}; foo.nome = 'Bar';x=foo.nome;"
+				+ "rua=foo.endereco.Rua;");
+		assertEquals("Bar", escopo.get("x"));
+		assertEquals("X", escopo.get("rua"));
+		executar("foo['endereco']['Rua'] = 'Y';rua=foo.endereco.Rua;");
+		assertEquals("Y", escopo.get("rua"));
+	}
+
+	@Test
+	public void acessoSuperEscopos() throws RecognitionException, Retorno {
+		executar("funcao outer() { funcao inner() { @@y=10; } @x=5; "
+				+ "retornar inner; } i = outer();");
+		assertEquals(5l, escopo.get("x"));
+		executar("i();");
+		assertEquals(10l, escopo.get("y"));
+	}
+
+	@Test
+	public void metodo() throws RecognitionException, Retorno {
+		executar("conta = {saldo:0, creditar: funcao(qtd){isto.saldo = isto.saldo + qtd;},"
+				+ "debitar: funcao(qtd){isto.saldo = isto.saldo - qtd;}};s = conta.saldo;");
+		assertEquals(0l, escopo.get("s"));
+		executar("conta.creditar(10.5);s=conta.saldo;");
+		assertEquals(10.5, escopo.get("s"));
+		executar("conta.debitar(2.5);s=conta.saldo;");
+		assertEquals(8.0, escopo.get("s"));
 	}
 }

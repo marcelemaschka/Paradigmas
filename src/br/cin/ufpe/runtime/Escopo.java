@@ -16,6 +16,10 @@ public class Escopo extends HashMap<String, Object> {
 	public Escopo(Escopo superEscopo) {
 		this.superEscopo = superEscopo;
 	}
+	
+	public Escopo getSuperEscopo() {
+		return superEscopo;
+	}
 
 	public void embutirFuncao(FuncaoEmbutida func) {
 		this.put(func.getNome(), func);

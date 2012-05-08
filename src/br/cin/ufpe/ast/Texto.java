@@ -14,4 +14,9 @@ public class Texto extends Expressao {
 	public Object valor(Escopo escopo) {
 		return valor;
 	}
+	
+	@Override
+	public String toString() {		
+		return valor;
+	}
 }

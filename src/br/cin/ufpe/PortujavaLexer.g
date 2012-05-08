@@ -21,7 +21,7 @@ PARA
   :
   'para'
   ;
-    
+
 EM
   :
   'em'
@@ -68,31 +68,41 @@ A
   ;
 //
 
+PONTO
+  :
+  '.'
+  ;
+
+ESCOPO
+  :
+  '@'
+  ;
+
 OU_LOGICO
   :
   '||'
   ;
-  
+
 E_LOGICO
   :
   '&&'
   ;
-  
+
 OU_BIT
   :
   '|'
   ;
-  
+
 E_BIT
   :
   '&'
   ;
-  
+
 DIF
   :
   '!='
   ;
-  
+
 IGUAL
   :
   '=='
@@ -102,7 +112,7 @@ ESHIFT
   :
   '<<'
   ;
-  
+
 DSHIFT
   :
   '>>'
@@ -112,22 +122,22 @@ MAIOR_IGUAL
   :
   '>='
   ;
-  
+
 MAIOR
   :
   '>'
   ;
-  
+
 MENOR_IGUAL
   :
   '<='
   ;
-  
+
 MENOR
   :
   '<'
   ;
-  
+
 AD
   :
   '+'
@@ -137,7 +147,7 @@ SUB
   :
   '-'
   ;
-  
+
 MULT
   :
   '*'
@@ -147,12 +157,12 @@ DIV
   :
   '/'
   ;
-  
+
 ATRIB
   :
   '='
   ;
-  
+
 EXCL
   :
   '!'
@@ -167,7 +177,7 @@ PVIRG
   :
   ';'
   ;
-  
+
 DPONT
   :
   ':'
@@ -177,17 +187,17 @@ EPAR
   :
   '('
   ;
-  
+
 DPAR
   :
   ')'
   ;
-  
+
 ECOL
   :
   '['
   ;
-  
+
 DCOL
   :
   ']'
@@ -227,17 +237,17 @@ StringBuilder sb = new StringBuilder();
           '\\'
           (
             ('n' 
-                 {
-                  sb.append("\n");
-                 })
+                {
+                 sb.append("\n");
+                })
             | ('\'' 
-                    {
-                     sb.append("'");
-                    })
+                   {
+                    sb.append("'");
+                   })
             | ('\\' 
-                    {
-                     sb.append("\\");
-                    })
+                   {
+                    sb.append("\\");
+                   })
           )
         )
       )
@@ -250,17 +260,17 @@ StringBuilder sb = new StringBuilder();
           | '\n'
          )
         
-         {
-          sb.appendCodePoint($c);
-         }
+        {
+         sb.appendCodePoint($c);
+        }
       )
     )*
     '\''
   )
   
-   {
-    setText(sb.toString());
-   }
+  {
+   setText(sb.toString());
+  }
   ;
 
 IDENTIFICADOR
@@ -285,9 +295,9 @@ ESPACO_EM_BRANCO
     | '\t'
   )+
   
-   {
-    $channel = HIDDEN;
-   }
+  {
+   $channel = HIDDEN;
+  }
   ;
 
 COMENTARIO_LINHA
@@ -301,15 +311,15 @@ COMENTARIO_LINHA
     '\r'? '\n'
   )
   
-   {
-    $channel = HIDDEN;
-   }
+  {
+   $channel = HIDDEN;
+  }
   ;
 
 COMENTARIO_BLOCO
   :
   ('/*' .* '*/') 
-                 {
-                  $channel = HIDDEN;
-                 }
+                {
+                 $channel = HIDDEN;
+                }
   ;
