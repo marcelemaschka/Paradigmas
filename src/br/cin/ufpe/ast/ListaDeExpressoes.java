@@ -21,9 +21,4 @@ public class ListaDeExpressoes extends Expressao {
 		return val;
 	}
 
-	@Override
-	public String valorTexto(Escopo escopo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

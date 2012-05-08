@@ -5,30 +5,37 @@ import br.cin.ufpe.runtime.Escopo;
 public class Identificador extends Expressao {
 
 	private String nome;
+	private int nivel;
 
-	public Identificador(String nome) {
+	public Identificador(String nome, int nivel) {
 		this.nome = nome;
+		this.nivel = nivel;
 	}
-	
+
 	public String getNome() {
 		return nome;
+	}
+	
+	public int getNivel() {
+		return nivel;
 	}
 
 	@Override
 	public Object valor(Escopo escopo) {
-		Object valor= escopo.get(nome);
-		if(valor==null){
-			throw new IllegalArgumentException("Variável "+nome+" não foi declarada");
+		Escopo e = escopo;
+		for (int i = 0; i < nivel && e.getSuperEscopo() != null; i++)
+			e = e.getSuperEscopo();
+		Object valor = e.get(nome);
+		if (valor == null) {
+			throw new IllegalArgumentException("Variável " + nome
+					+ " não foi declarada");
 		}
 		return valor;
 	}
 
 	@Override
-	public String valorTexto(Escopo escopo) {
-		Object valor=valor(escopo);
-		if(valor instanceof Boolean){
-			return (Boolean) valor?"verdadeiro":"falso";
-		}
-		return valor.toString();
+	public String toString() {
+		return nome;
 	}
+
 }

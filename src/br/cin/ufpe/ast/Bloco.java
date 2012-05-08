@@ -1,5 +1,6 @@
 package br.cin.ufpe.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.cin.ufpe.ast.Retornar.Retorno;
@@ -9,21 +10,17 @@ public class Bloco extends Nodo {
 
 	private List<Comando> comandos;
 
+	public Bloco(Comando comando) {
+		this.comandos = new ArrayList<Comando>();
+		this.comandos.add(comando);
+	}
+
 	public Bloco(List<Comando> comandos) {
 		this.comandos = comandos;
 	}
-	
-	
-	
-	protected Escopo configurarEscopo(Escopo escopo){
-		return new Escopo(escopo);
-	}
 
 	public void executar(Escopo escopo) throws Retorno {
-		
-		Escopo escopoLocal=configurarEscopo(escopo);
-		
 		for (Comando comando : comandos)
-			comando.executar(escopoLocal);
+			comando.executar(escopo);
 	}
 }

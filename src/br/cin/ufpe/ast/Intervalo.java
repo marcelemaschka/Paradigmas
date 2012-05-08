@@ -5,11 +5,11 @@ import br.cin.ufpe.runtime.IteradorDeIntervalo;
 
 public class Intervalo extends Expressao {
 
-	private Inteiro inicio;
-	private Inteiro fim;
-	private Inteiro passo;
+	private Expressao inicio;
+	private Expressao fim;
+	private Expressao passo;
 
-	public Intervalo(Inteiro inicio, Inteiro fim, Inteiro passo) {
+	public Intervalo(Expressao inicio, Expressao fim, Expressao passo) {
 		this.inicio = inicio;
 		this.fim = fim;
 		this.passo = passo;
@@ -17,18 +17,22 @@ public class Intervalo extends Expressao {
 
 	@Override
 	public Object valor(Escopo escopo) {
-		Long inicio = (Long) this.inicio.valor(escopo);
-		Long fim = (Long) this.fim.valor(escopo);
+		Object inicio = this.inicio.valor(escopo);
+		if (!(inicio instanceof Long))
+			throw new IllegalArgumentException(
+					"Início do intervalo deve ter valor inteiro.");
+		Object fim = this.fim.valor(escopo);
+		if (!(fim instanceof Long))
+			throw new IllegalArgumentException(
+					"Fim do intervalo deve ter valor inteiro.");
 		Long passo = null;
-		if (this.passo != null)
-			passo = (Long) this.passo.valor(escopo);
-		return new IteradorDeIntervalo(inicio, fim, passo);
+		if (this.passo != null) {
+			Object val = this.passo.valor(escopo);
+			if (!(val instanceof Long))
+				throw new IllegalArgumentException(
+						"Passo do intervalo deve ter valor inteiro.");
+			passo = (Long) val;
+		}
+		return new IteradorDeIntervalo((Long) inicio, (Long) fim, passo);
 	}
-
-	@Override
-	public String valorTexto(Escopo escopo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

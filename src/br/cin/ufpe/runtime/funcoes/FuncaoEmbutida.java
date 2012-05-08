@@ -1,13 +1,8 @@
 package br.cin.ufpe.runtime.funcoes;
 
-import br.cin.ufpe.runtime.Closure;
-import br.cin.ufpe.runtime.Escopo;
+import br.cin.ufpe.runtime.Funcao;
 
-public abstract class FuncaoEmbutida extends Closure {
-
-	public FuncaoEmbutida(Escopo escopo) {
-		super(escopo, null, null);
-	}
+public abstract class FuncaoEmbutida extends Funcao {
 
 	public abstract String getNome();
 }

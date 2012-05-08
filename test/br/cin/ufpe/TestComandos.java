@@ -1,28 +1,37 @@
 package br.cin.ufpe;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.junit.Before;
 import org.junit.Test;
 
 import br.cin.ufpe.ast.Programa;
 import br.cin.ufpe.ast.Retornar.Retorno;
+import br.cin.ufpe.runtime.Acesso;
 import br.cin.ufpe.runtime.Escopo;
 import br.cin.ufpe.runtime.funcoes.Util;
 
 public class TestComandos {
 
 	private Escopo escopo;
+	private ByteArrayOutputStream saida;
+
+	@Before
+	public void setup() {
+		saida = new ByteArrayOutputStream();
+		escopo = new Escopo();
+		Util.embutirClasses(escopo);
+		Util.embutirFuncoes(escopo, null, saida, saida);
+	}
 
 	public void executar(String codigo) throws RecognitionException, Retorno {
-		escopo = new Escopo();
-		Util.embutirFuncoes(escopo);
 		ANTLRStringStream cod = new ANTLRStringStream(codigo);
 		PortujavaLexer lexer = new PortujavaLexer(cod);
 		PortujavaParser parser = new PortujavaParser(new CommonTokenStream(
@@ -40,7 +49,7 @@ public class TestComandos {
 	@Test
 	public void atribuicao() throws RecognitionException, Retorno {
 		executar("x = 5 + 3 * 10;");
-		assertEquals(35.0, escopo.get("x"));
+		assertEquals(35l, escopo.get("x"));
 	}
 
 	@Test
@@ -54,38 +63,90 @@ public class TestComandos {
 		executar("x=1;y=2; se falso { y=3; } senao { x = 4; }");
 		assertEquals(2L, escopo.get("y"));
 		assertEquals(4L, escopo.get("x"));
+	}
 
+	@Test
+	public void senaoSe() throws RecognitionException, Retorno {
+		executar("se 1>2 {x=1000;} senao se 2>1 {x=2000;} senao se 3>1 {x=2;} senao {x=10;}");
+		assertEquals(2000l, escopo.get("x"));
 	}
 
 	@Test
 	public void enquanto() throws RecognitionException, Retorno {
 		executar("x=0; enquanto x<100 { x=x+1; }");
-		assertEquals(100.0, escopo.get("x"));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void escopo() throws RecognitionException, Retorno {
-		executar("x=0;se x==0 {y=2;}x=y+2;");
-		assertEquals(false, (Double) (escopo.get("x")) == 4);
+		assertEquals(100l, escopo.get("x"));
 	}
 
 	@Test
 	public void para() throws RecognitionException, Retorno {
 		executar("fatorial=1;para x em :10 a 1: {fatorial=fatorial*x;}");
-		assertEquals(3628800.0, escopo.get("fatorial"));
+		assertEquals(3628800l, escopo.get("fatorial"));
+	}
+
+	@Test
+	public void paraIntervaloComVariaveis() throws RecognitionException,
+			Retorno {
+		executar("inicio=3;fim=-2;pulo=2;soma=0;para x em :inicio a fim,pulo: {soma=soma+x;}");
+		assertEquals(1l, escopo.get("soma"));
 	}
 
 	@Test
 	public void escreva() throws RecognitionException, Retorno, IOException {
-		PrintStream out = System.out;
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(baos));
 		executar("escrevaln('O valor de x é '+10*5);");
-		baos.flush();
-		baos.close();
-		String str = new String(baos.toByteArray());
-		assertEquals(true, "O valor de x é 50.0\n".equals(str));
-		System.setOut(out);
+		saida.flush();
+		String str = new String(saida.toByteArray());
+		assertEquals("O valor de x é 50\n", str);
 	}
 
+	@Test
+	public void sobrescritaDeOperador() throws RecognitionException, Retorno {
+		executar("foo={nome: 'Foo', '#+#': funcao(operando) {retornar 1000;}}; x = foo+'sds';");
+		assertEquals(1000l, escopo.get("x"));
+	}
+
+	@Test
+	public void atribuicaoAtributo() throws RecognitionException, Retorno {
+		executar("foo={nome: 'Foo', endereco:{Rua: 'X'}}; foo.nome = 'Bar';x=foo.nome;"
+				+ "rua=foo.endereco.Rua;");
+		assertEquals("Bar", escopo.get("x"));
+		assertEquals("X", escopo.get("rua"));
+		executar("foo['endereco']['Rua'] = 'Y';rua=foo.endereco.Rua;");
+		assertEquals("Y", escopo.get("rua"));
+	}
+
+	@Test
+	public void acessoSuperEscopos() throws RecognitionException, Retorno {
+		executar("funcao outer() { funcao inner() { @@y=10; } @x=5; "
+				+ "retornar inner; } i = outer();");
+		assertEquals(5l, escopo.get("x"));
+		assertNull(escopo.get("y"));
+		executar("i();");
+		assertEquals(10l, escopo.get("y"));
+	}
+
+	@Test
+	public void metodo() throws RecognitionException, Retorno {
+		executar("conta = {saldo:0, creditar: funcao(qtd){isto.saldo = isto.saldo + qtd;},"
+				+ "debitar: funcao(qtd){isto.saldo = isto.saldo - qtd;}};s = conta.saldo;");
+		assertEquals(0l, escopo.get("s"));
+		executar("conta.creditar(10.5);s=conta.saldo;");
+		assertEquals(10.5, escopo.get("s"));
+		executar("conta.debitar(2.5);s=conta.saldo;");
+		assertEquals(8.0, escopo.get("s"));
+	}
+
+	@Test
+	public void construcaoDeInstancias() throws RecognitionException, Retorno {
+		String codigo = "classe Conta (Objeto) {\n'" + Acesso.INIT
+				+ "':funcao(saldo){isto.saldo= saldo;},\n"
+				+ "creditar: funcao(qtd){isto.saldo = isto.saldo + qtd;},\n"
+				+ "debitar: funcao(qtd){isto.saldo = isto.saldo - qtd;}\n}"
+				+ "c = nova Conta(5);s=c.saldo;";
+		executar(codigo);
+		assertEquals(5l, escopo.get("s"));
+		executar("c.creditar(10.5);s=c.saldo;");
+		assertEquals(15.5, escopo.get("s"));
+		executar("c.debitar(2.5);s=c.saldo;");
+		assertEquals(13.0, escopo.get("s"));
+	}
 }
