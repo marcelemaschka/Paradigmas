@@ -12,7 +12,7 @@ public class ClasseNumber extends ClasseEmbutida {
 	public static final ClasseNumber instancia = new ClasseNumber();
 
 	private ClasseNumber() {
-		put("classe", ClasseObjeto.instancia);
+		put(Acesso.SUPER, ClasseObjeto.instancia);
 		put("comparar", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {
@@ -116,7 +116,7 @@ public class ClasseNumber extends ClasseEmbutida {
 
 	@Override
 	public String getNome() {
-		return "Number";
+		return "Numero";
 	}
 
 }

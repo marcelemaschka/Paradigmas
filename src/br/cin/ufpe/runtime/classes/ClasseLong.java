@@ -2,6 +2,7 @@ package br.cin.ufpe.runtime.classes;
 
 import java.util.List;
 
+import br.cin.ufpe.runtime.Acesso;
 import br.cin.ufpe.runtime.Funcao;
 import br.cin.ufpe.runtime.Operacao;
 
@@ -11,7 +12,7 @@ public class ClasseLong extends ClasseEmbutida {
 	public static final ClasseLong instancia = new ClasseLong();
 
 	private ClasseLong() {
-		put("classe", ClasseNumber.instancia);
+		put(Acesso.SUPER, ClasseNumber.instancia);
 		put("#&#", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {
@@ -60,7 +61,7 @@ public class ClasseLong extends ClasseEmbutida {
 
 	@Override
 	public String getNome() {
-		return "Long";
+		return "Inteiro";
 	}
 
 }

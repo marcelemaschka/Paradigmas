@@ -46,6 +46,16 @@ FUNCAO
   :
   'funcao'
   ;
+  
+CONSTRUIR
+  :
+  'novo'|'nova'
+  ;
+  
+CLASSE
+  :
+  'classe'
+  ;
 
 RETORNAR
   :

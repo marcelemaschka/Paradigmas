@@ -1,5 +1,7 @@
 package br.cin.ufpe.runtime.classes;
 
+import br.cin.ufpe.runtime.Acesso;
+
 
 @SuppressWarnings("serial")
 public class ClasseDouble extends ClasseEmbutida {
@@ -7,7 +9,7 @@ public class ClasseDouble extends ClasseEmbutida {
 	public static final ClasseDouble instancia = new ClasseDouble();
 
 	private ClasseDouble() {
-		put("classe", ClasseNumber.instancia);
+		put(Acesso.SUPER, ClasseNumber.instancia);
 
 	}
 

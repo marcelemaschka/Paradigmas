@@ -12,7 +12,7 @@ public class ClasseString extends ClasseEmbutida {
 	public static final ClasseString instancia = new ClasseString();
 
 	private ClasseString() {
-		put("classe", ClasseObjeto.instancia);
+		put(Acesso.SUPER, ClasseObjeto.instancia);
 		put("comparar", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {

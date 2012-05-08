@@ -9,8 +9,10 @@ import br.cin.ufpe.runtime.classes.ClasseString;
 
 public class Acesso {
 
-	public static final String GETTER = "*getAtributo";
-	public static final String SETTER = "*setAtributo";
+	public static final String GETTER = "[getAtributo]";
+	public static final String SETTER = "[setAtributo]";
+	public static final String SUPER = "[super]";
+	public static final String INIT = "[init]";
 
 	public static Object chamarMetodo(String nome, Object... argumentos) {
 		Object alvo = argumentos[0];
@@ -29,31 +31,34 @@ public class Acesso {
 	}
 
 	public static Object getAtributoReal(Object alvo, Object arg) {
-		Objeto classe = getClasse(alvo);
+		Object cls = null;
+		if (alvo.getClass() == Objeto.class)
+			cls = alvo;
+		else
+			cls = getSuper(alvo);
 		Object rv = null;
-		Object cls = classe;
 		while (rv == null && cls instanceof Objeto) {
-			Objeto c = (Objeto) cls;			
+			Objeto c = (Objeto) cls;
 			rv = c.get(arg);
-			cls = ((Objeto) cls).get("classe");
+			cls = getSuper(cls);
 		}
 		return rv;
 	}
 
-	public static Objeto getClasse(Object alvo) {
-		Objeto classe = null;
+	public static Object getSuper(Object alvo) {
+		Object rv = null;
 		if (alvo instanceof Boolean)
-			classe = ClasseBoolean.instancia;
+			rv = ClasseBoolean.instancia;
 		else if (alvo instanceof Long)
-			classe = ClasseLong.instancia;
+			rv = ClasseLong.instancia;
 		else if (alvo instanceof Double)
-			classe = ClasseDouble.instancia;
+			rv = ClasseDouble.instancia;
 		else if (alvo instanceof String)
-			classe = ClasseString.instancia;
+			rv = ClasseString.instancia;
 		else if (alvo instanceof Objeto)
-			classe = (Objeto) alvo;
+			rv = (Objeto) ((Objeto) alvo).get(SUPER);
 		else
 			throw new IllegalArgumentException("Tipo de objeto desconhecido");
-		return classe;
+		return rv;
 	}
 }

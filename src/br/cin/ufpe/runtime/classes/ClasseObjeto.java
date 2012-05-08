@@ -25,13 +25,16 @@ public class ClasseObjeto extends ClasseEmbutida {
 				checarNumeroDeArgs(args, 2);
 				Object alvo = args.get(0);
 				Object attr = args.get(1);				
-				Objeto classe = Acesso.getClasse(alvo);
+				Object cls = null;
+				if (alvo.getClass() == Objeto.class)
+					cls = alvo;
+				else
+					cls = Acesso.getSuper(alvo);
 				Object rv = null;
-				Object cls = classe;
 				while (rv == null && cls instanceof Objeto) {
 					Objeto c = (Objeto) cls;
 					rv = c.get(attr);
-					cls = ((Objeto) cls).get("classe");
+					cls = Acesso.getSuper(cls);
 				}
 				return rv;
 			}
@@ -125,6 +128,6 @@ public class ClasseObjeto extends ClasseEmbutida {
 
 	@Override
 	public String getNome() {
-		return "Object";
+		return "Objeto";
 	}
 }

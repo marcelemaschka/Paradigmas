@@ -1,6 +1,7 @@
 package br.cin.ufpe;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import org.junit.Test;
 
 import br.cin.ufpe.ast.Programa;
 import br.cin.ufpe.ast.Retornar.Retorno;
+import br.cin.ufpe.runtime.Acesso;
 import br.cin.ufpe.runtime.Escopo;
 import br.cin.ufpe.runtime.funcoes.Util;
 
@@ -25,6 +27,7 @@ public class TestComandos {
 	public void setup() {
 		saida = new ByteArrayOutputStream();
 		escopo = new Escopo();
+		Util.embutirClasses(escopo);
 		Util.embutirFuncoes(escopo, null, saida, saida);
 	}
 
@@ -116,6 +119,7 @@ public class TestComandos {
 		executar("funcao outer() { funcao inner() { @@y=10; } @x=5; "
 				+ "retornar inner; } i = outer();");
 		assertEquals(5l, escopo.get("x"));
+		assertNull(escopo.get("y"));
 		executar("i();");
 		assertEquals(10l, escopo.get("y"));
 	}
@@ -129,5 +133,20 @@ public class TestComandos {
 		assertEquals(10.5, escopo.get("s"));
 		executar("conta.debitar(2.5);s=conta.saldo;");
 		assertEquals(8.0, escopo.get("s"));
+	}
+
+	@Test
+	public void construcaoDeInstancias() throws RecognitionException, Retorno {
+		String codigo = "classe Conta (Objeto) {\n'" + Acesso.INIT
+				+ "':funcao(saldo){isto.saldo= saldo;},\n"
+				+ "creditar: funcao(qtd){isto.saldo = isto.saldo + qtd;},\n"
+				+ "debitar: funcao(qtd){isto.saldo = isto.saldo - qtd;}\n}"
+				+ "c = nova Conta(5);s=c.saldo;";
+		executar(codigo);
+		assertEquals(5l, escopo.get("s"));
+		executar("c.creditar(10.5);s=c.saldo;");
+		assertEquals(15.5, escopo.get("s"));
+		executar("c.debitar(2.5);s=c.saldo;");
+		assertEquals(13.0, escopo.get("s"));
 	}
 }

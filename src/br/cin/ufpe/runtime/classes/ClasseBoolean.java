@@ -12,7 +12,7 @@ public class ClasseBoolean extends ClasseEmbutida {
 	public static final ClasseBoolean instancia = new ClasseBoolean();
 
 	private ClasseBoolean() {
-		put("classe", ClasseObjeto.instancia);
+		put(Acesso.SUPER, ClasseObjeto.instancia);
 		put("texto", new Funcao() {
 			@Override
 			public Object chamar(List<Object> args) {
@@ -77,6 +77,6 @@ public class ClasseBoolean extends ClasseEmbutida {
 
 	@Override
 	public String getNome() {
-		return "String";
+		return "Booleano";
 	}
 }

@@ -7,6 +7,6 @@ import br.cin.ufpe.runtime.classes.ClasseObjeto;
 @SuppressWarnings("serial")
 public class Objeto extends HashMap<Object, Object> {
 	public Objeto() {
-		put("classe", ClasseObjeto.instancia);
+		put(Acesso.SUPER, ClasseObjeto.instancia);
 	}
 }

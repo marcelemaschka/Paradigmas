@@ -67,6 +67,7 @@ comando_bloco returns [Comando rv]
   :
   (
     cmd=declaracao_de_funcao
+    | cmd=declaracao_de_classe
     | cmd=se
     | cmd=enquanto
     | cmd=para
@@ -117,6 +118,12 @@ ArrayList<String> parametros = new ArrayList<String>();
                                              {
                                               $rv = new DeclaracaoDeFuncao($nome.rv, parametros, $bloco.rv);
                                              }
+  ;
+
+declaracao_de_classe returns [Comando rv]
+  :
+  CLASSE nome=identificador EPAR s=identificador DPAR objeto
+  {$rv = new DeclaracaoDeClasse($nome.rv, $s.rv, $objeto.rv);}
   ;
 
 se returns [Comando rv]
@@ -424,10 +431,14 @@ atomo returns [Expressao rv]
   // o antlr nao aceita isso
   :
   (
-    (objeto 
-           {
-            $rv = $objeto.rv;
-           })
+    (construcao 
+               {
+                $rv = $construcao.rv;
+               })
+    | (objeto 
+             {
+              $rv = $objeto.rv;
+             })
     | (lista 
             {
              $rv = $lista.rv;
@@ -449,6 +460,24 @@ atomo returns [Expressao rv]
                      $rv = $identificador.rv;
                     })
   )
+  ;
+
+construcao returns [Expressao rv]
+@init {
+ArrayList<Expressao> args = new ArrayList<Expressao>();
+}
+  :
+  CONSTRUIR s=identificador EPAR (a1=expressao 
+                                              {
+                                               args.add($a1.rv);
+                                              }
+    (VIRG an=expressao 
+                      {
+                       args.add($an.rv);
+                      })*)? DPAR 
+                                {
+                                 $rv = new Construcao($s.rv, args);
+                                }
   ;
 
 objeto returns [Expressao rv]
@@ -565,12 +594,14 @@ valor returns [Expressao rv]
 
 identificador returns [Identificador rv]
 @init {
-  int nivelEscopo = 0;
+int nivelEscopo = 0;
 }
   :
   (
-   (ESCOPO {nivelEscopo++;})*
-    t=IDENTIFICADOR
+    (ESCOPO 
+           {
+            nivelEscopo++;
+           })* t=IDENTIFICADOR
     | t=A
   )
   
