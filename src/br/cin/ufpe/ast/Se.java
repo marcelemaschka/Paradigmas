@@ -9,11 +9,13 @@ public class Se extends Comando {
 	private Bloco bloco2;
 	private Expressao expressao;
 
-	public Se(Expressao expressao, Bloco bloco1, Bloco bloco2) {
+	public Se(Expressao expressao, Bloco bloco1) {
 		this.expressao = expressao;
 		this.bloco1 = bloco1;
+	}
+	
+	public void setBloco2(Bloco bloco2) {
 		this.bloco2 = bloco2;
-		
 	}
 
 	@Override

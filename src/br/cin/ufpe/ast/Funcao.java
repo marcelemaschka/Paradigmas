@@ -21,9 +21,4 @@ public class Funcao extends Expressao {
 		return new Closure(escopo, parametros, bloco);
 	}
 
-	@Override
-	public String valorTexto(Escopo escopo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

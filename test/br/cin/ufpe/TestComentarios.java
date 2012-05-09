@@ -28,13 +28,13 @@ public class TestComentarios {
 	@Test
 	public void comentarioDeLinha() throws RecognitionException, Retorno {
 		executar("//qqq\nx = 5 + 3 * 10;//aaaa\n");
-		assertEquals(35.0, escopo.get("x"));
+		assertEquals(35l, escopo.get("x"));
 	}
 
 	@Test
 	public void comentarioDeBloco() throws RecognitionException, Retorno {
 		executar("/*aaa*\naaa */x = 5 + 3 * 10;/*sadfamfk*/");
-		assertEquals(35.0, escopo.get("x"));
+		assertEquals(35l, escopo.get("x"));
 	}
 
 }
