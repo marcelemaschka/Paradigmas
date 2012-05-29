@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -92,10 +93,10 @@ public class TestComandos {
 
 	@Test
 	public void escreva() throws RecognitionException, Retorno, IOException {
-		executar("escrevaln('O valor de x Ã© '+10*5);");
+		executar("escrevaln('O valor de x é '+10*5);");
 		saida.flush();
 		String str = new String(saida.toByteArray());
-		assertEquals("O valor de x Ã© 50\n", str);
+		assertEquals("O valor de x é 50\n", str);
 	}
 
 	@Test
@@ -149,4 +150,32 @@ public class TestComandos {
 		executar("c.debitar(2.5);s=c.saldo;");
 		assertEquals(13.0, escopo.get("s"));
 	}
+	
+	@Test
+	public void sobrescritaDeOperadores() throws RecognitionException, Retorno{
+		executar("classe Vetor (Objeto){\r\n" + 
+				"	'[init]': funcao(x, y, z) {\r\n" + 
+				"		isto.x = x;\r\n" + 
+				"		isto.y = y;\r\n" + 
+				"		isto.z = z;\r\n" + 
+				"	}, \r\n" + 
+				"	'#+#': funcao(v2) {\r\n" + 
+				"		rv = novo Vetor(0, 0, 0);\r\n" + 
+				"		rv.x = isto.x + v2.x;\r\n" + 
+				"		rv.y = isto.y + v2.y;\r\n" + 
+				"		rv.z = isto.z + v2.z;\r\n" + 
+				"		retornar rv;\r\n" + 
+				"	}\r\n" + 
+				"}");
+		executar("v1 = novo Vetor(1,4,1);v2 = novo Vetor(2,2,2);");
+		executar("v3 = v1 + v2;");		
+		Map v3 = (Map) escopo.get("v3");
+		assertEquals(3l, v3.get("x"));
+		assertEquals(6l, v3.get("y"));
+		assertEquals(3l, v3.get("z"));
+		executar("v3 = v1 - v2;");
+		
+	
+	}
+	
 }

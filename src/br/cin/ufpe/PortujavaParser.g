@@ -20,6 +20,7 @@ import br.cin.ufpe.ast.*;
 @members {
 @Override
 public void displayRecognitionError(String[] tokenNames, RecognitionException e) {
+	//super.displayRecognitionError(tokenNames, e);
 	throw new RuntimeException(e);
 }
 }

@@ -23,7 +23,7 @@ public class ChamadaDeFuncao extends Expressao {
 			alvo = ((AcessoAtributo) expressao).getAlvo().valor(escopo);
 		if (!(func instanceof br.cin.ufpe.runtime.Funcao))
 			throw new UnsupportedOperationException(
-					"SÃ³ Ã© possÃ­vel chamar funÃ§Ãµes");
+					"Só é possível chamar funçoes");
 		br.cin.ufpe.runtime.Funcao f = (br.cin.ufpe.runtime.Funcao) func;
 		ArrayList<Object> args = new ArrayList<Object>();
 		args.add(alvo);

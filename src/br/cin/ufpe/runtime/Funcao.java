@@ -7,12 +7,12 @@ public abstract class Funcao {
 
 	@Override
 	public String toString() {
-		return "<<Função>>";
+		return "<<Funcao>>";
 	}
 
 	protected IllegalArgumentException argInvalido() {
 		return new IllegalArgumentException(
-				"Função chamada com número de argumentos inesperado.");
+				"Funcao chamada com numero de argumentos inesperado.");
 	}
 
 	protected void checarNumeroDeArgs(List<Object> args, int n) {

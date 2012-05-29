@@ -20,16 +20,20 @@ public class InterpretadorInterativo {
 	public static void main(String[] args) throws IOException, Retorno {
 
 		System.out.println("Interpretador interativo da linguagem Portujava");
-		System.out.println("Digite um comando ou expressï¿½o:");
+		System.out.println("Digite um comando ou expressão:");
 		System.out.print(">>>");
 		Escopo escopo = new Escopo();
 		Util.embutirFuncoes(escopo);
+		Util.embutirClasses(escopo);		
 		Scanner scanner = new Scanner(System.in);
 
 		while (true) {
 			String line = null;
 			try {
 				line = scanner.nextLine();
+				if(!line.trim().endsWith(";")){
+					line = line+";";
+				}
 			} catch (NoSuchElementException e) {
 				System.exit(0);
 			}
