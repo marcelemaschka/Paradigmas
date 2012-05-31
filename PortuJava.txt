@@ -1,0 +1,99 @@
+// ESCOPO
+/*
+
+funcao outer() {
+
+	funcao inner() {
+		@@y=10;
+	}
+	
+	@x=5;
+	
+	retornar inner;
+}
+
+y = 0;
+
+i = outer();
+
+escrevaln('x = ' + x);
+escrevaln('y = ' + y);
+
+i();
+
+escrevaln('y = ' + y);
+
+
+/**/
+
+// CLOSURE
+/*
+
+funcao f() {
+	
+	i=0;
+	
+	funcao closure() {
+		@i=@i+1;
+		retornar @i;
+	}
+	
+	retornar closure;
+	
+} 
+
+g1 = f();
+g2 = f();
+
+x = g1();
+escrevaln(x);
+
+x = g1();x = g1();x = g1();
+escrevaln(x);
+
+x = g2();x = g2();
+escrevaln(x);
+
+x = g1();
+escrevaln(x);
+
+/**/
+
+
+// CLASSES
+/**/
+classe Conta (Objeto) {	
+	
+	'[init]': funcao() { 
+		isto.saldo = 0;
+	}, 
+	
+	creditar: funcao(credito) {
+		isto.saldo = isto.saldo + credito;
+	},
+	
+	debitar: funcao(debito) {
+		isto.saldo = isto.saldo - debito;
+	}
+	 
+}
+
+c1 = nova Conta();
+c2 = nova Conta();
+//c2 = c1;
+
+escrevaln('saldo1 = ' + c1.saldo);
+escrevaln('saldo2 = ' + c2.saldo);
+
+c1.creditar(10);
+c2.debitar(15);
+escrevaln('saldo1 = ' + c1.saldo);
+escrevaln('saldo2 = ' + c2.saldo);
+
+c1.debitar(5);
+c2.creditar(5);
+escrevaln('saldo1 = ' + c1.saldo);
+escrevaln('saldo2 = ' + c2.saldo);
+
+/**/
+
